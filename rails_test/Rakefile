@@ -1,10 +1,3 @@
-task :fake_install => [:clobber, :gem] do
-  FileUtils.mkdir_p "tmp"
-  system "mkdir -p tmp"
-  system "gem install pkg/loofah-*.gem -i tmp --no-ri --no-rdoc"
-  system "chmod -R go-w tmp"
-end
-
 def run(cmd)
   puts "* running: #{cmd}"
   system cmd
@@ -13,7 +6,7 @@ end
 
 namespace :test do
   desc "run tests across various versions of Rails"
-  task :rails => [:fake_install] do
+  task :rails do
     results = {}
     Dir.chdir("rails_test") do
       Dir["rails-*"].sort.reverse.each do |rails|
@@ -22,15 +15,19 @@ namespace :test do
         flavor = $2
         run "./generate_test_directory #{version} #{flavor}"
         Dir.chdir rails do
-          ENV['GEM_HOME'] = File.expand_path("../../tmp")
+          begin
+            run "bundle check"
+          rescue
+            run "bundle install"
+          end
           ENV['RAILS_ENV'] = "test"
           FileUtils.mkdir_p "log"
           begin
             unless File.exist?("db/test.sqlite3")
               run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-              run "rake db:migrate"
+              run "bundle exec rake db:migrate"
             end
-            run "rake test"
+            run "bundle exec rake test"
           rescue Object
             results[rails] = "FAIL"
           else
@@ -48,4 +45,3 @@ namespace :test do
   desc "Run test suite and the full Rails regression test suite"
   task :all => [:test, :"test:rails"]
 end
-

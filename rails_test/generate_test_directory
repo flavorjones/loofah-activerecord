@@ -13,21 +13,24 @@ version = ARGV[0]
 flavor = ARGV[1]
 
 require "rubygems"
-begin
-  gem "rails", "=#{version}"
-rescue Gem::LoadError => e
-  puts "ERROR: could not find rails version #{version}"
-  puts "Try running:"
-  puts "  gem install rails --version=#{version}"
-  exit 1
-end
-
-puts "* successfully detected rails version #{version}"
 
 def run(cmd)
   puts "* running '#{cmd}'"
   system cmd
   raise "command failed" unless $? == 0
+end
+
+def rails version, dir
+  begin
+    gem "rails", "=#{version}"
+  rescue Gem::LoadError => e
+    puts "ERROR: could not find rails version #{version}"
+    puts "Try running:"
+    puts "  gem install rails --version=#{version}"
+    exit 1
+  end
+  puts "* successfully detected rails version #{version}"
+  run "yes | rails _#{version}_ #{dir} > /dev/null"
 end
 
 if flavor
@@ -38,9 +41,15 @@ end
 
 flavors.each do |flavor|
   dir = "rails-#{version}-#{flavor}"
-  unless File.exists?(dir)
-    run "yes | rails _#{version}_ #{dir} > /dev/null"
-  end
+  rails version, dir unless File.exists?(dir)
   run "rsync -a common/all/ #{dir}"
   run "rsync -a common/#{flavor}/ #{dir}"
+  File.open("#{dir}/Gemfile", "w") do |gemfile|
+    gemfile.write <<-GEM
+      source :gemcutter
+      gem "rails", "=#{version}"
+      gem "loofah", :path => File.join(File.dirname(__FILE__),"../..")
+      gem "sqlite3-ruby", :require => "sqlite3"
+    GEM
+  end
 end
