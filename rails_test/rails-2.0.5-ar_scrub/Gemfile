@@ -1,0 +1,4 @@
+      source :gemcutter
+      gem "rails", "=2.0.5"
+      gem "loofah", :path => File.join(File.dirname(__FILE__),"../..")
+      gem "sqlite3-ruby", :require => "sqlite3"
