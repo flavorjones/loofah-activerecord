@@ -6,3 +6,4 @@ require 'acts_as_fu'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "loofah"))
 
 puts "=> testing with Nokogiri #{Nokogiri::VERSION_INFO.inspect}"
+puts "=> testing with Loofah #{Loofah::VERSION}"
