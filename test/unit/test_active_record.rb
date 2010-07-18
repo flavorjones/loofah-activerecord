@@ -1,7 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'helper'))
 
-require 'loofah/active_record'
-
 class TestActiveRecord < Test::Unit::TestCase
 
   HTML_STRING = "<div>omgwtfbbq</div>"

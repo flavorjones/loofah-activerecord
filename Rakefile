@@ -4,7 +4,7 @@ require 'hoe'
 
 Hoe.plugin :git
 
-Hoe.spec "loofah" do
+Hoe.spec "loofah-activerecord" do
   developer "Mike Dalessio", "mike.dalessio@gmail.com"
 
   self.extra_rdoc_files = FileList["*.rdoc"]
@@ -13,11 +13,11 @@ Hoe.spec "loofah" do
 
   extra_deps << ["loofah", ">= 1.0.0.beta.1"]
   extra_dev_deps << ["mocha", ">=0.9"]
-  extra_dev_deps << ["thoughtbot-shoulda", ">=2.10"]
+  extra_dev_deps << ["shoulda", ">=2.10"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]
 end
 
-require "rails_test/Rakefile"
+load "rails_test/Rakefile"
 
 task :gemspec do
   system %q(rake debug_gem | grep -v "^\(in " > loofah.gemspec)
