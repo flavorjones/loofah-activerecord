@@ -10,7 +10,7 @@ namespace :test do
     results = {}
     Dir.chdir(File.dirname(__FILE__)) do
       Dir["rails-*"].sort.reverse.each do |rails|
-        rails =~ /rails-(\d+\.\d+\.\d)+-(.*)/
+        rails =~ /rails-([^-]+)-(.*)/
         version = $1
         flavor = $2
         run "./generate_test_directory #{version} #{flavor}"
@@ -36,7 +36,7 @@ namespace :test do
               run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
               run "bundle exec rake db:migrate"
             end
-            run "bundle exec rake test"
+            run "bundle exec rake test:units"
           rescue Object
             results[rails] = "FAIL"
           else

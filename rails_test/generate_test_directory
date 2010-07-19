@@ -30,7 +30,11 @@ def rails version, dir
     exit 1
   end
   puts "* successfully detected rails version #{version}"
-  run "yes | rails _#{version}_ #{dir} > /dev/null"
+  if version >= "3"
+    run "yes | rails _#{version}_ new #{dir} > /dev/null"
+  else
+    run "yes | rails _#{version}_ #{dir} > /dev/null"
+  end
 end
 
 if flavor
