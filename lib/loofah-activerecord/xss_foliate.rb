@@ -199,13 +199,9 @@ module Loofah
     end
 
     def self.xss_foliate_all_models
-      ActiveRecord::Base.xss_foliate
+      ::ActiveRecord::Base.xss_foliate
     end
   end
 end
 
-ActiveRecord::Base.extend(Loofah::XssFoliate::ClassMethods)
-
-if defined?(LOOFAH_XSS_FOLIATE_ALL_MODELS) && LOOFAH_XSS_FOLIATE_ALL_MODELS
-  Loofah::XssFoliate.xss_foliate_all_models
-end
+::ActiveRecord::Base.extend(Loofah::XssFoliate::ClassMethods)

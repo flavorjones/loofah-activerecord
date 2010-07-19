@@ -44,12 +44,4 @@ flavors.each do |flavor|
   rails version, dir unless File.exists?(dir)
   run "rsync -a common/all/ #{dir}"
   run "rsync -a common/#{flavor}/ #{dir}"
-  File.open("#{dir}/Gemfile", "w") do |gemfile|
-    gemfile.write <<-GEM
-      source :gemcutter
-      gem "rails", "=#{version}"
-      gem "loofah", :path => File.join(File.dirname(__FILE__),"../..")
-      gem "sqlite3-ruby", :require => "sqlite3"
-    GEM
-  end
 end

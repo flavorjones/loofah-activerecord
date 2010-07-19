@@ -8,13 +8,22 @@ namespace :test do
   desc "run tests across various versions of Rails"
   task :rails do
     results = {}
-    Dir.chdir("rails_test") do
+    Dir.chdir(File.dirname(__FILE__)) do
       Dir["rails-*"].sort.reverse.each do |rails|
         rails =~ /rails-(\d+\.\d+\.\d)+-(.*)/
         version = $1
         flavor = $2
         run "./generate_test_directory #{version} #{flavor}"
         Dir.chdir rails do
+          File.open("Gemfile", "w") do |gemfile|
+            gemfile.write <<-GEM
+              source :gemcutter
+              gem "rails", "=#{version}"
+              gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
+              gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
+              gem "sqlite3-ruby", :require => "sqlite3"
+            GEM
+          end
           begin
             run "bundle check"
           rescue
@@ -41,7 +50,4 @@ namespace :test do
       puts "* #{key}: #{results[key]}"
     end
   end
-
-  desc "Run test suite and the full Rails regression test suite"
-  task :all => [:test, :"test:rails"]
 end
