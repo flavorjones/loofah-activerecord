@@ -4,50 +4,71 @@ def run(cmd)
   raise "ERROR running command" unless $? == 0
 end
 
+def setup_rails_app dir
+  dir =~ /rails-([^-]+)-(.*)/
+  version, flavor = $1, $2
+  run "./generate_test_directory #{version} #{flavor}"
+  Dir.chdir dir do
+    File.open("Gemfile", "w") do |gemfile|
+      gemfile.write <<-GEM
+        source :gemcutter
+        gem "rails", "=#{version}"
+        gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
+        gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
+        gem "sqlite3-ruby", :require => "sqlite3"
+      GEM
+    end
+    begin
+      run "bundle check"
+    rescue
+      run "bundle install"
+    end
+  end
+end
+
+def test_rails_app dir
+  @results ||= {}
+  Dir.chdir(dir) do
+    ENV['RAILS_ENV'] = "test"
+    FileUtils.mkdir_p "log"
+    begin
+      unless File.exist?("db/test.sqlite3")
+        run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
+        run "bundle exec rake db:migrate"
+      end
+      run "bundle exec rake test:units"
+    rescue Object
+      @results[dir] = "FAIL"
+    else
+      @results[dir] = "SUCCESS"
+    end
+  end
+end
+
+Dir.chdir(File.dirname(__FILE__)) do
+  Dir["rails-*"].sort.each do |dir|
+    desc "test #{dir}"
+    task "test:#{dir}" do
+      Dir.chdir(File.dirname(__FILE__)) do
+        setup_rails_app dir
+        test_rails_app dir
+      end
+    end
+  end
+end
+
 namespace :test do
   desc "run tests across various versions of Rails"
   task :rails do
-    results = {}
     Dir.chdir(File.dirname(__FILE__)) do
-      Dir["rails-*"].sort.reverse.each do |rails|
-        rails =~ /rails-([^-]+)-(.*)/
-        version = $1
-        flavor = $2
-        run "./generate_test_directory #{version} #{flavor}"
-        Dir.chdir rails do
-          File.open("Gemfile", "w") do |gemfile|
-            gemfile.write <<-GEM
-              source :gemcutter
-              gem "rails", "=#{version}"
-              gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
-              gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
-              gem "sqlite3-ruby", :require => "sqlite3"
-            GEM
-          end
-          begin
-            run "bundle check"
-          rescue
-            run "bundle install"
-          end
-          ENV['RAILS_ENV'] = "test"
-          FileUtils.mkdir_p "log"
-          begin
-            unless File.exist?("db/test.sqlite3")
-              run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-              run "bundle exec rake db:migrate"
-            end
-            run "bundle exec rake test:units"
-          rescue Object
-            results[rails] = "FAIL"
-          else
-            results[rails] = "SUCCESS"
-          end
-        end
+      Dir["rails-*"].sort.reverse.each do |dir|
+        Rake::Task["test:#{dir}"].invoke
       end
     end
+    print_results results
     puts "----- RESULTS -----"
-    results.keys.sort.each do |key|
-      puts "* #{key}: #{results[key]}"
+    @results.keys.sort.each do |key|
+      puts "* #{key}: #{@results[key]}"
     end
   end
 end
