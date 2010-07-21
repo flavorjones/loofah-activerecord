@@ -1,5 +1,5 @@
 *~
 doc
 pkg
-tmp
-loofah.gemspec
+loofah-activerecord.gemspec
+.bundle
