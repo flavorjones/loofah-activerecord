@@ -16,6 +16,7 @@ Hoe.spec "loofah-activerecord" do
   extra_dev_deps << ["mocha", ">=0.9"]
   extra_dev_deps << ["shoulda", ">=2.10"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]
+  extra_dev_deps << ["sqlite3-ruby", ">=1.2"] # acts_as_fu dependency
 end
 
 load "rails_test/Rakefile"
