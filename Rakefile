@@ -3,6 +3,7 @@ gem 'hoe', '>= 2.3.0'
 require 'hoe'
 
 Hoe.plugin :git
+Hoe.plugin :bundler
 
 Hoe.spec "loofah-activerecord" do
   developer "Mike Dalessio", "mike.dalessio@gmail.com"

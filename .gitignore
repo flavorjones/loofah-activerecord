@@ -2,4 +2,5 @@
 doc
 pkg
 loofah-activerecord.gemspec
+Gemfile
 .bundle
