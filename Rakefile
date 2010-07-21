@@ -20,12 +20,9 @@ end
 load "rails_test/Rakefile"
 
 task :gemspec do
-  system %q(rake debug_gem | grep -v "^\(in " > loofah.gemspec)
+  system %q(rake debug_gem | grep -v "^\(in " > loofah-activerecord.gemspec)
 end
 task "test:rails" => :gemspec
-
-desc "Run test suite and the full Rails regression test suite"
-task "test:all" => [:test, :"test:rails"]
 
 task :redocs => :fix_css
 task :docs => :fix_css

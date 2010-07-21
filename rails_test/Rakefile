@@ -45,14 +45,20 @@ def test_rails_app dir
   end
 end
 
-Dir.chdir(File.dirname(__FILE__)) do
-  Dir["rails-*"].sort.each do |dir|
-    desc "test #{dir}"
-    task "test:#{dir}" do
-      Dir.chdir(File.dirname(__FILE__)) do
-        setup_rails_app dir
-        test_rails_app dir
-      end
+def print_results
+  puts "----- RESULTS -----"
+  @results.keys.sort.each do |key|
+    puts "* #{key}: #{@results[key]}"
+  end
+end
+
+Dir["#{File.dirname(__FILE__)}/rails-*"].sort.each do |fqdir|
+  dir = File.basename fqdir
+  desc "test #{dir}"
+  task "test:#{dir}" do
+    Dir.chdir(File.dirname(__FILE__)) do
+      setup_rails_app dir
+      test_rails_app dir
     end
   end
 end
@@ -60,15 +66,10 @@ end
 namespace :test do
   desc "run tests across various versions of Rails"
   task :rails do
-    Dir.chdir(File.dirname(__FILE__)) do
-      Dir["rails-*"].sort.reverse.each do |dir|
-        Rake::Task["test:#{dir}"].invoke
-      end
+    Dir["#{File.dirname(__FILE__)}/rails-*"].sort.reverse.each do |fqdir|
+      dir = File.basename fqdir
+      Rake::Task["test:#{dir}"].invoke
     end
-    print_results results
-    puts "----- RESULTS -----"
-    @results.keys.sort.each do |key|
-      puts "* #{key}: #{@results[key]}"
-    end
+    print_results
   end
 end
