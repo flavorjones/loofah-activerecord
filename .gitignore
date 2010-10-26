@@ -3,3 +3,5 @@ doc
 pkg
 loofah-activerecord.gemspec
 .bundle
+Gemfile.lock
+rails_test/bundler_cache
