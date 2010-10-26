@@ -13,7 +13,7 @@ module Loofah
   #  If you'd like to scrub all fields in all your models (and perhaps *opt-out* in specific models):
   #
   #    # config/initializers/loofah.rb
-  #    require 'loofah'
+  #    require 'loofah-activerecord'
   #    Loofah::XssFoliate.xss_foliate_all_models
   #
   #    # db/schema.rb
@@ -57,7 +57,7 @@ module Loofah
   #  Alternatively, if you would like to *opt-in* to the models and attributes that are sanitized:
   #
   #    # config/initializers/loofah.rb
-  #    require 'loofah'
+  #    require 'loofah-activerecord'
   #    ## note omission of call to Loofah::XssFoliate.xss_foliate_all_models
   #
   #    # db/schema.rb

@@ -3,7 +3,7 @@ module Loofah
   # Loofah can scrub ActiveRecord attributes in a before_validation callback:
   #
   #   # config/initializers/loofah.rb
-  #   require 'loofah'
+  #   require 'loofah-activerecord'
   #
   #   # db/schema.rb
   #   create_table "posts" do |t|
