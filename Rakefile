@@ -13,7 +13,7 @@ Hoe.spec "loofah-activerecord" do
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
 
-  extra_deps << ["loofah", ">= 1.0.0.beta.1"]
+  extra_deps << ["loofah", ">= 1.0.0"]
   extra_dev_deps << ["mocha", ">=0.9"]
   extra_dev_deps << ["shoulda", ">=2.10"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]

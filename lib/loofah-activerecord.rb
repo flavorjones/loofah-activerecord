@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__))) unless $LOAD_PATH.i
 require 'loofah'
 
 module Loofah::ActiveRecord
-  VERSION = "1.0.0.beta.1"
+  VERSION = "1.0.0"
 end
 
 if defined?(Rails) && Rails::VERSION::MAJOR == 3
