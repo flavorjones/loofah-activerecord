@@ -8,6 +8,7 @@ def setup_rails_app dir
   dir =~ /rails-([^-]+)-(.*)/
   version, flavor = $1, $2
   run "./generate_test_directory #{version} #{flavor}"
+  bundler_cache = File.expand_path("bundler_cache")
   Dir.chdir dir do
     File.open("Gemfile", "w") do |gemfile|
       gemfile.write <<-GEM
@@ -18,11 +19,7 @@ def setup_rails_app dir
         gem "sqlite3-ruby", :require => "sqlite3"
       GEM
     end
-    begin
-      run "bundle check"
-    rescue
-      run "bundle install"
-    end
+    run "bundle install --path=#{bundler_cache}"
   end
 end
 
