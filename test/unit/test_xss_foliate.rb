@@ -186,6 +186,10 @@ class TestXssFoliate < Test::Unit::TestCase
     end
 
     context "these tests should pass for libxml 2.7.5 and later" do
+      setup do
+        Post.xss_foliate
+      end
+
       should "not scrub double quotes into html entities" do
         answer = new_post(:plain_text => "\"something\"")
         answer.valid?
