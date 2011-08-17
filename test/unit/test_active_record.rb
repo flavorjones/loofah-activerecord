@@ -1,6 +1,6 @@
 require "helper"
 
-class TestActiveRecord < Test::Unit::TestCase
+class TestActiveRecord < Loofah::ActiveRecord::TestCase
 
   HTML_STRING = "<div>omgwtfbbq</div>"
   PLAIN_TEXT  = "vanilla text"

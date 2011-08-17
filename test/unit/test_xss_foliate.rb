@@ -1,6 +1,6 @@
 require "helper"
 
-class TestXssFoliate < Test::Unit::TestCase
+class TestXssFoliate < Loofah::ActiveRecord::TestCase
 
   HTML_STRING = "<div>omgwtfbbq</div>"
   PLAIN_TEXT = "vanilla text"
