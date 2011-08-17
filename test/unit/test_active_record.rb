@@ -6,7 +6,7 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
   PLAIN_TEXT  = "vanilla text"
 
   context "with a Post model" do
-    setup do
+    before do
       ActsAsFu.build_model(:posts) do
         string :plain_text
         string :html_string
@@ -15,24 +15,24 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
 
     context "scrubbing a single field as a fragment" do
       context "using a symbol to indicate the attribute" do
-        setup do
+        before do
           Post.html_fragment :html_string, :scrub => :prune
           assert ! Post.xss_foliated?
           @post = Post.new :html_string => HTML_STRING, :plain_text => PLAIN_TEXT
         end
 
-        should "scrub the specified field" do
-          Loofah.expects(:scrub_fragment).with(HTML_STRING, :prune).once
-          Loofah.expects(:scrub_fragment).with(PLAIN_TEXT,  :prune).never
+        it "scrub the specified field" do
+          mock(Loofah).scrub_fragment(HTML_STRING, :prune).once
+          mock(Loofah).scrub_fragment(PLAIN_TEXT,  :prune).never
           @post.valid?
         end
 
-        should "only call scrub_fragment once" do
-          Loofah.expects(:scrub_fragment).once
+        it "only call scrub_fragment once" do
+          mock(Loofah).scrub_fragment(anything, anything).once
           @post.valid?
         end
 
-        should "generate strings" do
+        it "generate strings" do
           @post.valid?
           assert_equal String,      @post.html_string.class
           assert_equal HTML_STRING, @post.html_string
@@ -40,15 +40,15 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
       end
 
       context "using a string to indicate the attribute" do
-        setup do
+        before do
           Post.html_fragment 'html_string', :scrub => :prune
           assert ! Post.xss_foliated?
           @post = Post.new :html_string => HTML_STRING, :plain_text => PLAIN_TEXT
         end
 
-        should "scrub the specified field" do
-          Loofah.expects(:scrub_fragment).with(HTML_STRING, :prune).once
-          Loofah.expects(:scrub_fragment).with(PLAIN_TEXT,  :prune).never
+        it "scrub the specified field" do
+          mock(Loofah).scrub_fragment(HTML_STRING, :prune).once
+          mock(Loofah).scrub_fragment(PLAIN_TEXT,  :prune).never
           @post.valid?
         end
       end
@@ -56,44 +56,44 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
 
     context "scrubbing a single field as a document" do
       context "using a symbol to indicate the attribute" do
-        setup do
+        before do
           Post.html_document :html_string, :scrub => :strip
           @post = Post.new :html_string => HTML_STRING, :plain_text => PLAIN_TEXT
         end
 
-        should "scrub the specified field, but not other fields" do
-          Loofah.expects(:scrub_document).with(HTML_STRING, :strip).once
-          Loofah.expects(:scrub_document).with(PLAIN_TEXT,  :strip).never
+        it "scrub the specified field, but not other fields" do
+          mock(Loofah).scrub_document(HTML_STRING, :strip).once
+          mock(Loofah).scrub_document(PLAIN_TEXT,  :strip).never
           @post.valid?
         end
 
-        should "only call scrub_document once" do
-          Loofah.expects(:scrub_document).once
+        it "only call scrub_document once" do
+          mock(Loofah).scrub_document(anything, anything).once
           @post.valid?
         end
 
-        should "generate strings" do
+        it "generate strings" do
           @post.valid?
           assert_equal String, @post.html_string.class
         end
       end
 
       context "using a string to indicate the attribute" do
-        setup do
+        before do
           Post.html_document 'html_string', :scrub => :strip
           @post = Post.new :html_string => HTML_STRING, :plain_text => PLAIN_TEXT
         end
 
-        should "scrub the specified field, but not other fields" do
-          Loofah.expects(:scrub_document).with(HTML_STRING, :strip).once
-          Loofah.expects(:scrub_document).with(PLAIN_TEXT,  :strip).never
+        it "scrubs the specified field, but not other fields" do
+          mock(Loofah).scrub_document(HTML_STRING, :strip).once
+          mock(Loofah).scrub_document(PLAIN_TEXT,  :strip).never
           @post.valid?
         end
       end
     end
 
     context "not passing any options" do
-      should "raise ArgumentError" do
+      it "raises ArgumentError" do
         assert_raises(ArgumentError) {
           Post.html_fragment :foo
         }
@@ -101,36 +101,32 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
     end
 
     context "not passing :scrub option" do
-      should "raise ArgumentError" do
-        assert_raise(ArgumentError) {
+      it "raises ArgumentError" do
+        assert_raises(ArgumentError) {
           Post.html_fragment :foo, :bar => :quux
         }
       end
     end
 
     context "passing a :scrub option" do
-      should "not raise ArgumentError" do
-        assert_nothing_raised {
-          Post.html_fragment :foo, :scrub => :quux
-        }
+      it "does not raise ArgumentError" do
+        Post.html_fragment :foo, :scrub => :quux
       end
     end
 
     context "passing a Scrubber" do
-      setup do
+      before do
         @called = false
         @scrubber = Loofah::Scrubber.new do |node|
           @called = true
         end
       end
 
-      should "not raise ArgumentError" do
-        assert_nothing_raised {
-          Post.html_fragment :html_string, :scrub => @scrubber
-        }
+      it "does not raise ArgumentError" do
+        Post.html_fragment :html_string, :scrub => @scrubber
       end
 
-      should "scrub properly" do
+      it "scrubs properly" do
         Post.html_fragment :html_string, :scrub => @scrubber
         post = Post.new :html_string => HTML_STRING, :plain_text => PLAIN_TEXT
         post.valid?

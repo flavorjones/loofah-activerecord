@@ -14,10 +14,13 @@ Hoe.spec "loofah-activerecord" do
   self.readme_file      = "README.rdoc"
 
   extra_deps << ["loofah", ">= 1.0.0"]
-  extra_dev_deps << ["mocha", ">=0.9"]
-  extra_dev_deps << ["shoulda", ">=2.10"]
+  extra_dev_deps << ["minitest", "~>2.2"]
+  extra_dev_deps << ["rr", "~>1.0"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]
-  extra_dev_deps << ["bundler", "=1.0.0"]
+  extra_dev_deps << ["bundler", "~>1.0"]
+  extra_dev_deps << ["hoe-git", ">=0"]
+  extra_dev_deps << ["hoe-bundler", ">=0"]
+  extra_dev_deps << ["hoe-gemspec", ">=0"]
 end
 
 load "rails_test/Rakefile"
