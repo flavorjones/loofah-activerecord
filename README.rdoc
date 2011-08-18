@@ -1,8 +1,8 @@
 = loofah-activerecord
 
 * http://github.com/flavorjones/loofah-activerecord
-* http://loofah.rubyforge.org
-* http://rubyforge.org/projects/loofah
+* http://rubydoc.info/github/flavorjones/loofah-activerecord/master/frames
+* http://librelist.com/browser/loofah
 
 == Description
 
@@ -11,42 +11,45 @@ ActiveRecord models.
 
 == Features
 
-* Two ActiveRecord extensions:
-  * Loofah::XssFoliate, an XssTerminate[http://github.com/look/xss_terminate/tree/master] drop-in replacement, is an *opt-out* sanitizer. By default all models and attributes are sanitized.
+There are two ActiveRecord extensions included with loofah-activerecord:
+
   * Loofah::ActiveRecordExtension is an *opt-in* sanitizer. You must explicitly declare attributes to be sanitized.
+  * Loofah::XssFoliate, a drop-in replacement for XssTerminate[http://github.com/look/xss_terminate/tree/master], is an *opt-out* sanitizer. By default all models and attributes are sanitized.
 
 === ActiveRecord Extension \#1: Opt-In
 
-See Loofah::ActiveRecordExtension for full documentation. The methods
-mixed into ActiveRecord are:
+See Loofah::ActiveRecordExtension for full documentation. The class
+methods mixed into ActiveRecord are:
 
-* Loofah::ActiveRecordExtension.html_document
-* Loofah::ActiveRecordExtension.html_fragment
+* +html_document+
+* +html_fragment+
 
 which are used to declare how specific string and text attributes
-should be scrubbed at +before_validation+.
+should be scrubbed during +before_validation+.
 
   # app/model/post.rb
   class Post < ActiveRecord::Base
-    html_fragment :body, :scrub => :prune  # scrubs 'body' at before_validation
+    html_fragment :body, :scrub => :prune  # scrubs `body` using the :prune scrubber
   end
 
 === ActiveRecord Extension \#2: Opt-Out
 
-See Loofah::XssFoliate::ClassMethods for more documentation. The methods mixed into ActiveRecord are:
+See Loofah::XssFoliate::ClassMethods for more documentation. The class
+methods mixed into ActiveRecord are:
 
-* Loofah::XssFoliate::ClassMethods.xss_foliate
-* Loofah::XssFoliate::ClassMethods.xss_foliated?
+* +xss_foliate+
+* +xss_foliated?+
 
 which are used to declare how specific string and text attributes
-should be scrubbed at +before_validation+.
+should be scrubbed during +before_validation+.
 
-Attributes are stripped by default, unless another scrubber is
-specified or the attribute is present in an +:except+ clause.
+Attributes are scrubbed with the +:strip+ scrubber by default, unless
+another scrubber is specified or the attribute is present in an
++:except+ clause.
 
 == Requirements
 
-* Nokogiri >= 1.3.3
+* Loofah >= 1.0.0
 * Rails 3.0, 2.3, 2.2, 2.1, 2.0 or 1.2 (pow!)
 
 == Installation
@@ -57,11 +60,11 @@ Unsurprisingly:
 
 == Support
 
-The bug tracker is available here (the Loofah project):
+The bug tracker is available here:
 
-* http://github.com/flavorjones/loofah/issues
+* http://github.com/flavorjones/loofah-activerecord/issues
 
-And the mailing list is on librelist (also the Loofah mailing list):
+And the mailing list is on librelist (the general Loofah mailing list):
 
 * loofah@librelist.com / http://librelist.com
 
@@ -89,7 +92,7 @@ This library was split out of the Loofah project for version 1.0.0.
 
 The MIT License
 
-Copyright (c) 2009, 2010 by Mike Dalessio
+Copyright (c) 2009, 2010, 2011 by Mike Dalessio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -14,6 +14,7 @@ Hoe.spec "loofah-activerecord" do
   self.readme_file      = "README.rdoc"
 
   extra_deps << ["loofah", ">= 1.0.0"]
+
   extra_dev_deps << ["minitest", "~>2.2"]
   extra_dev_deps << ["rr", "~>1.0"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]
@@ -41,11 +42,6 @@ task :fix_css do
 
     .method-description p {
       margin-top                : .5em ;
-    }
-
-    #main ul, div#documentation ul {
-      list-style-type           : disc ! IMPORTANT ;
-      list-style-position       : inside ! IMPORTANT ;
     }
 
     h2 + ul {
