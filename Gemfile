@@ -6,10 +6,13 @@ source :gemcutter
 
 gem "loofah", ">=1.0.0"
 
-gem "mocha", ">=0.9", :group => [:development, :test]
-gem "shoulda", ">=2.10", :group => [:development, :test]
+gem "minitest", "~>2.2", :group => [:development, :test]
+gem "rr", "~>1.0", :group => [:development, :test]
 gem "acts_as_fu", ">=0.0.5", :group => [:development, :test]
-gem "bundler", "=1.0.0", :group => [:development, :test]
+gem "bundler", "~>1.0", :group => [:development, :test]
+gem "hoe-git", ">=0", :group => [:development, :test]
+gem "hoe-bundler", ">=0", :group => [:development, :test]
+gem "hoe-gemspec", ">=0", :group => [:development, :test]
 gem "hoe", ">=2.9.4", :group => [:development, :test]
 
 # vim: syntax=ruby
