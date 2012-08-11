@@ -88,6 +88,13 @@ module Loofah
       REAL_OPTIONS = VALID_OPTIONS - ALIASED_OPTIONS.keys
       # :startdoc:
 
+      def self.extended(base)
+        # Rails 3.0 and later
+        if base.respond_to?(:class_attribute)
+          base.send(:class_attribute, :xss_foliate_options)
+        end
+      end
+
       #
       #  Annotate your model with this method to specify which fields
       #  you want scrubbed, and how you want them scrubbed. XssFoliate
@@ -120,7 +127,10 @@ module Loofah
       #
       def xss_foliate(options = {})
         callback_already_declared = \
-        if respond_to?(:before_validation_callback_chain)
+        if respond_to?(:class_attribute)
+          # Rails 3.0 and later
+          false
+        elsif respond_to?(:before_validation_callback_chain)
           # Rails 2.1 and later
           before_validation_callback_chain.any? {|cb| cb.method == :xss_foliate_fields}
         else
@@ -131,7 +141,10 @@ module Loofah
 
         unless callback_already_declared
           before_validation        :xss_foliate_fields
-          class_inheritable_reader :xss_foliate_options
+          unless respond_to?(:class_attribute)
+            # Rails 3.0 and later
+            class_inheritable_reader :xss_foliate_options
+          end
           include XssFoliate::InstanceMethods
         end
 
@@ -147,7 +160,12 @@ module Loofah
           options[real] += Array(options.delete(option)).collect { |val| val.to_sym } if options[option]
         end
 
-        write_inheritable_attribute(:xss_foliate_options, options)
+        if respond_to?(:class_attribute)
+          # Rails 3.0 and later
+          self.xss_foliate_options = options
+        else
+          write_inheritable_attribute(:xss_foliate_options, options)
+        end
       end
 
       #
@@ -155,7 +173,13 @@ module Loofah
       #  xss_foliation to its attributes. Could be useful in test suites.
       #
       def xss_foliated?
-        options = read_inheritable_attribute(:xss_foliate_options)
+        options =
+          if respond_to?(:class_attribute)
+            # Rails 3.0 and later
+            xss_foliate_options
+          else
+            read_inheritable_attribute(:xss_foliate_options)
+          end
         ! (options.nil? || options.empty?)
       end
     end
