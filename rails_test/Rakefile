@@ -30,7 +30,7 @@ def test_rails_app dir
     FileUtils.mkdir_p "log"
     begin
       run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-      run "bundle exec rake db:migrate test:units"
+      run "bundle exec rake db:migrate test:units --trace"
     rescue Object
       @results[dir] = "FAIL"
     else

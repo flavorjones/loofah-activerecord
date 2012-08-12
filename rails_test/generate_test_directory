@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/env ruby
 
 unless ARGV[0]
   puts "USAGE: #{File.basename($0)} <rails-version> [flavor]"
