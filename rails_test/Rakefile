@@ -1,3 +1,5 @@
+require 'bundler'
+
 def run(cmd)
   puts "* running: #{cmd}"
   system cmd
@@ -19,7 +21,7 @@ def setup_rails_app dir
         gem "sqlite3-ruby", :require => "sqlite3"
       GEM
     end
-    run "bundle install --path=#{bundler_cache}"
+    Bundler.with_clean_env { run "bundle install --path=#{bundler_cache}" }
   end
 end
 
@@ -30,7 +32,7 @@ def test_rails_app dir
     FileUtils.mkdir_p "log"
     begin
       run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-      run "bundle exec rake db:migrate test:units --trace"
+      Bundler.with_clean_env { run "bundle exec rake db:migrate test:units --trace" }
     rescue Object
       @results[dir] = "FAIL"
     else
