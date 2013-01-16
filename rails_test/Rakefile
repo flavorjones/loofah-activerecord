@@ -1,65 +1,87 @@
-require 'bundler'
+namespace "test" do
+  require "bundler"
+  require "yaml"
 
-def run(cmd)
-  puts "* running: #{cmd}"
-  system cmd
-  raise "ERROR running command" unless $? == 0
-end
-
-def setup_rails_app dir
-  dir =~ /rails-([^-]+)-(.*)/
-  version, flavor = $1, $2
-  run "./generate_test_directory #{version} #{flavor}"
-  bundler_cache = File.expand_path("bundler_cache")
-  Dir.chdir dir do
-    File.open("Gemfile", "w") do |gemfile|
-      gemfile.write <<-GEM
-        source :gemcutter
-        gem "rails", "=#{version}"
-        gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
-        gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
-        gem "sqlite3-ruby", :require => "sqlite3"
-      GEM
-    end
-    Bundler.with_clean_env { run "bundle install --path=#{bundler_cache}" }
+  def gem_versions_for rails_version
+    mm = rails_version.split(".")[0,2].join(".")
+    YAML.load_file("gem-versions.yml")[mm]
   end
-end
 
-def test_rails_app dir
-  @results ||= {}
-  Dir.chdir(dir) do
-    ENV['RAILS_ENV'] = "test"
-    FileUtils.mkdir_p "log"
-    begin
-      run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-      Bundler.with_clean_env { run "bundle exec rake db:migrate test:units --trace" }
-    rescue Object
-      @results[dir] = "FAIL"
-    else
-      @results[dir] = "SUCCESS"
-    end
+  def dir_to_version_and_flavor dir
+    dir =~ /rails-([^-]+)-(.*)/
+    return [$1, $2]
   end
-end
 
-def print_results
-  puts "----- RESULTS -----"
-  @results.keys.sort.each do |key|
-    puts "* #{key}: #{@results[key]}"
+  def run(cmd)
+    puts "* running: #{cmd}"
+    system cmd
+    raise "ERROR running command" unless $? == 0
   end
-end
 
-Dir["#{File.dirname(__FILE__)}/rails-*"].sort.each do |fqdir|
-  dir = File.basename fqdir
-  desc "test #{dir}"
-  task "test:#{dir}" do
-    Dir.chdir(File.dirname(__FILE__)) do
-      setup_rails_app dir
-      test_rails_app dir
+  def setup_rails_app dir
+    version, flavor = *(dir_to_version_and_flavor dir)
+
+    run "./generate_test_directory #{version} #{flavor}"
+    bundler_cache = File.expand_path("bundler_cache")
+    snowflakes = Array gem_versions_for(version)
+    Dir.chdir dir do
+      File.open("Gemfile", "w") do |gemfile|
+        gemfile.write <<-GEM
+          source :gemcutter
+          gem "rails", "=#{version}"
+          gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
+          gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
+          gem "sqlite3-ruby", :require => "sqlite3"
+        GEM
+        snowflakes.each { |name, versionspec| gemfile.puts %Q{gem "#{name}", "#{versionspec}"} }
+      end
+      FileUtils.rm_f "Gemfile.lock"
+      Bundler.with_clean_env do
+        begin
+          run "bundle install --quiet --local --path=#{bundler_cache}"
+        rescue
+          run "bundle install --quiet --path=#{bundler_cache}"
+        end
+      end
     end
   end
-end
 
-namespace :test do
+  def test_rails_app dir
+    version, flavor = *(dir_to_version_and_flavor dir)
+
+    @results ||= {}
+    Dir.chdir(dir) do
+      ENV['RAILS_ENV'] = "test"
+      FileUtils.mkdir_p "log"
+      begin
+        run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
+        Bundler.with_clean_env { run "bundle exec rake db:migrate test:units" }
+      rescue Object
+        @results[dir] = "FAIL"
+      else
+        @results[dir] = "SUCCESS"
+      end
+    end
+  end
+
+  def print_results
+    puts "----- RESULTS -----"
+    @results.keys.sort.each do |key|
+      puts "* #{key}: #{@results[key]}"
+    end
+  end
+
+  Dir["#{File.dirname(__FILE__)}/rails-*"].sort.each do |fqdir|
+    dir = File.basename fqdir
+    desc "test #{dir}"
+    task "#{dir}" do
+      Dir.chdir(File.dirname(__FILE__)) do
+        setup_rails_app dir
+        test_rails_app dir
+      end
+    end
+  end
+
   desc "run tests across various versions of Rails"
   task :rails do
     Dir["#{File.dirname(__FILE__)}/rails-*"].sort.reverse.each do |fqdir|
