@@ -1,4 +1,11 @@
-= Changelog
+
+== 1.1.0 (2013-01-16)
+
+Enhancements:
+
+* Support for Rails 3.1 and 3.2 (Thanks, Igal Koshevoy!)
+* Altered the installed directory structure to be lib/loofah/activerecord (was lib/loofah-activerecord).
+
 
 == 1.0.0 (2010-10-26)
 
