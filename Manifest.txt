@@ -5,9 +5,9 @@ Manifest.txt
 README.rdoc
 Rakefile
 lib/loofah-activerecord.rb
-lib/loofah-activerecord/active_record.rb
-lib/loofah-activerecord/railtie.rb
-lib/loofah-activerecord/xss_foliate.rb
+lib/loofah/activerecord/active_record.rb
+lib/loofah/activerecord/railtie.rb
+lib/loofah/activerecord/xss_foliate.rb
 rails_test/Rakefile
 rails_test/common/active_record/app/models/post.rb
 rails_test/common/active_record/test/unit/posts_test.rb
