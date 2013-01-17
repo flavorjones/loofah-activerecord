@@ -6,15 +6,17 @@
 
 == Description
 
-loofah-activerecord extends loofah's HTML sanitization into Rails
++loofah-activerecord+ extends +loofah+'s HTML sanitization into Rails
 ActiveRecord models.
+
+See more about +loofah+ at: http://github.com/flavorjones/loofah
 
 == Features
 
 There are two ActiveRecord extensions included with loofah-activerecord:
 
-  * Loofah::ActiveRecordExtension is an *opt-in* sanitizer. You must explicitly declare attributes to be sanitized.
-  * Loofah::XssFoliate, a drop-in replacement for XssTerminate[http://github.com/look/xss_terminate/tree/master], is an *opt-out* sanitizer. By default all models and attributes are sanitized.
+* Loofah::ActiveRecordExtension is an *opt-in* sanitizer. You must explicitly declare attributes to be sanitized.
+* Loofah::XssFoliate, a drop-in replacement for XssTerminate[http://github.com/look/xss_terminate/tree/master], is an *opt-out* sanitizer. By default all models and attributes are sanitized.
 
 === ActiveRecord Extension \#1: Opt-In
 
