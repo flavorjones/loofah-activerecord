@@ -7,19 +7,49 @@ namespace "test" do
     YAML.load_file("gem-versions.yml")[mm]
   end
 
+  def ruby_version_for rails_version
+    mmp = if rails_version =~ /^([12]\.|3\.0)/
+            "1.8.7"
+          else
+            "1.9.3"
+          end
+
+    rbenv_versions = `rbenv versions`.split("\n").map do |line|
+      line[2..-1].split.first
+    end
+
+    desired_version = rbenv_versions.reverse.select do |rbenv_version|
+      rbenv_version =~ /^#{mmp}/
+    end.first
+
+    raise "ERROR: No Ruby version matching #{mmp} installed with rbenv" if desired_version.nil?
+
+    desired_version
+  end
+
   def dir_to_version_and_flavor dir
     dir =~ /rails-([^-]+)-(.*)/
     return [$1, $2]
   end
 
-  def run(cmd)
+  def run(cmd, rbenv_version=nil)
     puts "* running: #{cmd}"
-    system cmd
+    begin
+      if rbenv_version
+        puts "  (with ruby version #{rbenv_version})"
+        ENV['RBENV_VERSION'] = rbenv_version
+        cmd = "rbenv exec #{cmd}"
+      end
+      system cmd
+    ensure
+      ENV.delete('RBENV_VERSION')
+    end
     raise "ERROR running command" unless $? == 0
   end
 
   def setup_rails_app dir
     version, flavor = *(dir_to_version_and_flavor dir)
+    ruby_version = ruby_version_for version
 
     run "./generate_test_directory #{version} #{flavor}"
     bundler_cache = File.expand_path("bundler_cache")
@@ -38,9 +68,9 @@ namespace "test" do
       FileUtils.rm_f "Gemfile.lock"
       Bundler.with_clean_env do
         begin
-          run "bundle install --quiet --local --path=#{bundler_cache}"
+          run "bundle install --quiet --local --path=#{bundler_cache}", ruby_version
         rescue
-          run "bundle install --quiet --path=#{bundler_cache}"
+          run "bundle install --quiet --path=#{bundler_cache}", ruby_version
         end
       end
     end
@@ -48,6 +78,7 @@ namespace "test" do
 
   def test_rails_app dir
     version, flavor = *(dir_to_version_and_flavor dir)
+    ruby_version = ruby_version_for version
 
     @results ||= {}
     Dir.chdir(dir) do
@@ -55,7 +86,7 @@ namespace "test" do
       FileUtils.mkdir_p "log"
       begin
         run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-        Bundler.with_clean_env { run "bundle exec rake db:migrate test:units" }
+        Bundler.with_clean_env { run "bundle exec rake db:migrate test:units", ruby_version }
       rescue Object
         @results[dir] = "FAIL"
       else
