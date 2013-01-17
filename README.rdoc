@@ -94,7 +94,7 @@ This library was split out of the Loofah project for version 1.0.0.
 
 The MIT License
 
-Copyright (c) 2009, 2010, 2011 by Mike Dalessio
+Copyright (c) 2009, 2010, 2011, 2012 by Mike Dalessio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
