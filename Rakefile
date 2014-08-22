@@ -23,6 +23,7 @@ Hoe.spec "loofah-activerecord" do
   extra_dev_deps << ["hoe-git", ">=0"]
   extra_dev_deps << ["hoe-bundler", ">=0"]
   extra_dev_deps << ["hoe-gemspec", ">=0"]
+  extra_dev_deps << ["unindent", ">=0"]
 end
 
 load "rails_test/Rakefile"
