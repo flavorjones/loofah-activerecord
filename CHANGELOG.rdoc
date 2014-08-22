@@ -4,6 +4,7 @@
 Enhancements:
 
 * Support for Rails 4.0 and 4.1.
+* Added an `:unencode_special_chars` option to opt out of entity encoding. (Thanks, @openbl!)
 
 
 == 1.1.0 (2013-01-16)
