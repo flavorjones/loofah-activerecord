@@ -11,8 +11,6 @@ puts "=> testing with Nokogiri #{Nokogiri::VERSION_INFO.inspect}"
 puts "=> testing with Loofah #{Loofah::VERSION}"
 
 class Loofah::ActiveRecord::TestCase < MiniTest::Spec
-  include RR::Adapters::TestUnit
-
   class << self
     alias_method :context, :describe
   end
