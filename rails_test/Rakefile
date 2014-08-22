@@ -1,6 +1,15 @@
 namespace "test" do
   require "bundler"
   require "yaml"
+  require "unindent"
+
+  def have_rvm?
+    @have_rvm ||= `which rvm 2>&1 > /dev/null` && $?.success?
+  end
+
+  def have_rbenv?
+    @have_rbenv ||= `which rbenv 2>&1 > /dev/null` && $?.success?
+  end
 
   def gem_versions_for rails_version
     mm = rails_version.split(".")[0,2].join(".")
@@ -37,17 +46,25 @@ namespace "test" do
     return [$1, $2]
   end
 
-  def run(cmd, rbenv_version=nil)
-    puts "* running: #{cmd}"
-    begin
-      if rbenv_version
-        puts "  (with ruby version #{rbenv_version})"
-        ENV['RBENV_VERSION'] = rbenv_version
-        cmd = "rbenv exec #{cmd}"
+  def run(cmd, ruby_version=nil)
+    if have_rvm?
+      puts "*running rvm: #{cmd}"
+      if ruby_version
+        cmd = "rvm \"#{ruby_version}\" do #{cmd}"
       end
       system cmd
-    ensure
-      ENV.delete('RBENV_VERSION')
+    elsif have_rbenv?
+      puts "* running rbenv: #{cmd}"
+      begin
+        if ruby_version
+          puts "  (with ruby version #{ruby_version})"
+          ENV['RBENV_VERSION'] = ruby_version
+          cmd = "rbenv exec #{cmd}"
+        end
+        system cmd
+      ensure
+        ENV.delete('RBENV_VERSION')
+      end
     end
     raise "ERROR running command" unless $? == 0
   end
@@ -61,8 +78,8 @@ namespace "test" do
     snowflakes = Array gem_versions_for(version)
     Dir.chdir dir do
       File.open("Gemfile", "w") do |gemfile|
-        gemfile.write <<-GEM
-          source :gemcutter
+        gemfile.write <<-GEM.unindent
+          source "https://rubygems.org"
           gem "rails", "=#{version}"
           gem "loofah", :path => File.join(File.dirname(__FILE__),"../../../loofah")
           gem "loofah-activerecord", :path => File.join(File.dirname(__FILE__),"../..")
