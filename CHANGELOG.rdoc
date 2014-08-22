@@ -1,4 +1,11 @@
 
+== 1.2.0 (2014-08-22)
+
+Enhancements:
+
+* Support for Rails 4.0 and 4.1.
+
+
 == 1.1.0 (2013-01-16)
 
 Enhancements:
