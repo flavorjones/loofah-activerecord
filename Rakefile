@@ -19,7 +19,7 @@ Hoe.spec "loofah-activerecord" do
   extra_dev_deps << ["minitest", "~>2.2"]
   extra_dev_deps << ["rr", "~>1.0"]
   extra_dev_deps << ["acts_as_fu", ">=0.0.5"]
-  extra_dev_deps << ["bundler", "~>1.2.0"]
+  extra_dev_deps << ["bundler", ">=1.2.0"]
   extra_dev_deps << ["hoe-git", ">=0"]
   extra_dev_deps << ["hoe-bundler", ">=0"]
   extra_dev_deps << ["hoe-gemspec", ">=0"]
