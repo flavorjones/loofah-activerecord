@@ -1,7 +1,17 @@
-
 require File.join(File.dirname(__FILE__), "../test_helper")
+begin
+  require "test/unit"
+rescue NameError
+  require "minitest"
+end
 
-class PostsTest < Test::Unit::TestCase
+if defined?(Minitest::Test)
+  LoofahTestBaseClass = Minitest::Test
+else
+  LoofahTestBaseClass = Test::Unit::TestCase
+end
+
+class PostsTest < LoofahTestBaseClass
   def test_loofah_scrubbing
     post = Post.new :title => "<script>yo dawg</script>", :body => "<script>omgwtfbbq</script>"
     post.valid?
