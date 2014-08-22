@@ -54,6 +54,19 @@ module Loofah
   #      # was: xss_terminate :except => [:title], :sanitize => [:body]
   #      xss_foliate :except => [:title], :sanitize => [:body]
   #
+  #  OR
+  #
+  #      # when the final content is intended for non-html contexts,
+  #      # such as plaintext email, you can turn off entity encoding
+  #      # for all fields
+  #      xss_foliate :encode_special_chars => false   # do *not* escape HTML entities in any field. NOTE THAT THE RESULT IS UNSAFE FOR RENDERING IN HTML CONTEXTS.
+  #
+  #  OR
+  #
+  #      # or you can turn off entity encoding only for specific fields.
+  #      xss_foliate :unencode_special_chars => [:title]  # will escape HTML entities in all fields except title. NOTE THAT `TITLE` IS UNSAFE FOR RENDERING IN HTML CONTEXTS.
+  #
+  #
   #  Alternatively, if you would like to *opt-in* to the models and attributes that are sanitized:
   #
   #    # config/initializers/loofah.rb
@@ -83,9 +96,11 @@ module Loofah
     #
     module ClassMethods
       # :stopdoc:
-      VALID_OPTIONS = [:except, :html5lib_sanitize, :sanitize] + Loofah::Scrubbers.scrubber_symbols
-      ALIASED_OPTIONS = {:html5lib_sanitize => :escape, :sanitize => :strip}
-      REAL_OPTIONS = VALID_OPTIONS - ALIASED_OPTIONS.keys
+      SYMBOL_OPTIONS = [:except, :html5lib_sanitize, :sanitize, :unencode_special_chars] + Loofah::Scrubbers.scrubber_symbols
+      BOOLEAN_OPTIONS = {:encode_special_chars => true}
+      ALIASED_SYMBOL_OPTIONS = {:html5lib_sanitize => :escape, :sanitize => :strip}
+      REAL_SYMBOL_OPTIONS = SYMBOL_OPTIONS - ALIASED_SYMBOL_OPTIONS.keys
+      VALID_OPTIONS = SYMBOL_OPTIONS + BOOLEAN_OPTIONS.keys + ALIASED_SYMBOL_OPTIONS.keys
       # :startdoc:
 
       def self.extended(base)
@@ -152,12 +167,23 @@ module Loofah
           raise ArgumentError, "unknown xss_foliate option #{option}" unless VALID_OPTIONS.include?(option)
         end
 
-        REAL_OPTIONS.each do |option|
+        REAL_SYMBOL_OPTIONS.each do |option|
           options[option] = Array(options[option]).collect { |val| val.to_sym }
         end
 
-        ALIASED_OPTIONS.each do |option, real|
+        ALIASED_SYMBOL_OPTIONS.each do |option, real|
           options[real] += Array(options.delete(option)).collect { |val| val.to_sym } if options[option]
+        end
+
+        BOOLEAN_OPTIONS.each do |option, default|
+          case options[option]
+          when FalseClass
+          when TrueClass
+          when NilClass
+            options[option] = default
+          else
+            raise "option #{option} only accepts `true` or `false` values"
+          end
         end
 
         if respond_to?(:class_attribute)
@@ -196,7 +222,7 @@ module Loofah
           field = column.name.to_sym
           value = self[field]
 
-          next if value.nil? || !value.is_a?(String)
+          next if !value.is_a?(String)
 
           next if xss_foliate_options[:except].include?(field)
 
@@ -204,7 +230,14 @@ module Loofah
 
           # :text if we're here
           fragment = Loofah.scrub_fragment(value, :strip)
-          self[field] = fragment.nil? ? "" : fragment.text
+
+          text_options = if xss_foliate_is_unencoded(field)
+                           {:encode_special_chars => false}
+                         else
+                           {}
+                         end
+
+          self[field] = fragment.nil? ? "" : fragment.text(text_options)
         end
       end
 
@@ -219,6 +252,11 @@ module Loofah
           end
         end
         false
+      end
+
+      def xss_foliate_is_unencoded(field)
+        (! xss_foliate_options[:encode_special_chars]) \
+        || xss_foliate_options[:unencode_special_chars].include?(field)
       end
     end
 

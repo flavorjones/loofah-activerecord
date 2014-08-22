@@ -103,7 +103,7 @@ class TestXssFoliate < Loofah::ActiveRecord::TestCase
           mock(Loofah).scrub_fragment(HTML_STRING,   :strip).once.returns(mock_doc)
           mock(Loofah).scrub_fragment(PLAIN_TEXT,    :strip).once.returns(mock_doc)
           mock(Loofah).scrub_fragment(INTEGER_VALUE, :strip).never
-          mock(mock_doc).text.times(2)
+          mock(mock_doc).text({}).times(2)
           assert new_post.valid?
         end
       end
@@ -118,7 +118,7 @@ class TestXssFoliate < Loofah::ActiveRecord::TestCase
           mock(Loofah).scrub_fragment(HTML_STRING,   :strip).once.returns(mock_doc)
           mock(Loofah).scrub_fragment(PLAIN_TEXT,    :strip).never
           mock(Loofah).scrub_fragment(INTEGER_VALUE, :strip).never
-          mock(mock_doc).text.once
+          mock(mock_doc).text({}).once
           new_post.valid?
         end
       end
@@ -181,35 +181,64 @@ class TestXssFoliate < Loofah::ActiveRecord::TestCase
       end
     end
 
-    context "these tests should pass for libxml 2.7.5 and later" do
+    context "with bad argument to encode_special_chars" do
+      it "raises an exception" do
+        assert_raises(RuntimeError) { Post.xss_foliate :encode_special_chars => [:title] }
+      end
+    end
+
+    context "with encode_special_chars turned off for all fields" do
       before do
-        Post.xss_foliate
+        Post.xss_foliate :encode_special_chars => false
       end
 
       it "not scrub double quotes into html entities" do
-        answer = new_post(:plain_text => "\"something\"")
+        answer = new_post(:plain_text => "\"something\"", :html_string => "\"something\"")
         answer.valid?
         assert_equal "\"something\"", answer.plain_text
+        assert_equal "\"something\"", answer.html_string
       end
 
       it "not scrub ampersands into html entities" do
-        answer = new_post(:plain_text => "& Something")
+        answer = new_post(:plain_text => "& Something", :html_string => "& Something")
         answer.valid?
         assert_equal "& Something", answer.plain_text
+        assert_equal "& Something", answer.html_string
       end
 
       it "not scrub \\r html entities" do
-        answer = new_post(:plain_text => "Another \r Something")
+        answer = new_post(:plain_text => "Another \r Something", :html_string => "Another \r Something")
         answer.valid?
         assert_equal "Another \r Something", answer.plain_text
+        assert_equal "Another \r Something", answer.html_string
+      end
+    end
+
+    context "with encode_special_chars turned off for one field" do
+      before do
+        Post.xss_foliate :unencode_special_chars => [:plain_text]
       end
 
-      it "not scrub \\n html entities" do
-        answer = new_post(:plain_text => "Another \n Something")
+      it "not scrub double quotes into html entities" do
+        answer = new_post(:plain_text => "\"something\"", :html_string => "\"something\"")
         answer.valid?
-        assert_equal "Another \n Something", answer.plain_text
+        assert_equal "\"something\"", answer.plain_text
+        assert_equal "&quot;something&quot;", answer.html_string
+      end
+
+      it "not scrub ampersands into html entities" do
+        answer = new_post(:plain_text => "& Something", :html_string => "& Something")
+        answer.valid?
+        assert_equal "& Something", answer.plain_text
+        assert_equal "&amp; Something", answer.html_string
+      end
+
+      it "not scrub \\r html entities" do
+        answer = new_post(:plain_text => "Another \r Something", :html_string => "Another \r Something")
+        answer.valid?
+        assert_equal "Another \r Something", answer.plain_text
+        assert_equal "Another &#13; Something", answer.html_string
       end
     end
   end
 end
-
