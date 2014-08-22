@@ -12,6 +12,7 @@ Hoe.spec "loofah-activerecord" do
   self.extra_rdoc_files = FileList["*.rdoc"]
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
+  self.license          "MIT"
 
   extra_deps << ["loofah", ">= 1.0.0"]
 
