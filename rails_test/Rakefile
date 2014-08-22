@@ -17,28 +17,16 @@ namespace "test" do
   end
 
   def ruby_version_for rails_version
-    mmp = case rails_version
-          when /^([12]\.|3\.0)/
-            "1.8.7"
-          when /^3\./
-            "1.9.3"
-          when /^4\.0/
-            "2.0.0"
-          when /^4\./
-            "2.1.2"
-          end
-
-    rbenv_versions = `rbenv versions`.split("\n").map do |line|
-      line[2..-1].split.first
+    case rails_version
+    when /^([12]\.|3\.0)/
+      "1.8.7"
+    when /^3\./
+      "1.9.3"
+    when /^4\.0/
+      "2.0.0"
+    when /^4\./
+      "2.1.2"
     end
-
-    desired_version = rbenv_versions.reverse.select do |rbenv_version|
-      rbenv_version =~ /^#{mmp}/
-    end.first
-
-    raise "ERROR: No Ruby version matching #{mmp} installed with rbenv" if desired_version.nil?
-
-    desired_version
   end
 
   def dir_to_version_and_flavor dir
