@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency(%q<loofah>, [">= 1.0.0"])
   s.add_development_dependency(%q<rdoc>, ["~> 4.0"])
-  s.add_development_dependency(%q<minitest>, ["~> 2.2"])
+  s.add_development_dependency(%q<minitest>)
   s.add_development_dependency(%q<rr>, ["~> 1.0"])
   s.add_development_dependency(%q<acts_as_fu>, [">= 0.0.5"])
   s.add_development_dependency(%q<bundler>, [">= 1.2.0"])
