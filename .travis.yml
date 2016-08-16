@@ -1,0 +1,18 @@
+language: ruby
+rvm:
+  - 2.2.5
+  - 2.3.0
+script: bundle exec rake test
+gemfile:
+  - gemfiles/rails3.gemfile
+  - gemfiles/rails4.gemfile
+  - gemfiles/rails5.gemfile
+matrix:
+  exclude:
+    - rvm: 2.3.0
+      gemfile: gemfiles/rails3.gemfile
+notifications:
+  email:
+    - support@travellink.com.au
+sudo: false
+cache: bundler
