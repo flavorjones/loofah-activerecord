@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = "+loofah-activerecord+ extends +loofah+'s HTML sanitization into Rails\nActiveRecord models.\n\nSee more about +loofah+ at: http://github.com/flavorjones/loofah"
   s.email = ["mike.dalessio@gmail.com"]
   s.extra_rdoc_files = ["CHANGELOG.rdoc", "MIT-LICENSE.txt", "Manifest.txt", "README.rdoc", "CHANGELOG.rdoc", "README.rdoc"]
-  s.files = [".gemtest", "CHANGELOG.rdoc", "Gemfile", "MIT-LICENSE.txt", "Manifest.txt", "README.rdoc", "Rakefile", "lib/loofah-activerecord.rb", "lib/loofah/activerecord/active_record.rb", "lib/loofah/activerecord/railtie.rb", "lib/loofah/activerecord/xss_foliate.rb", "rails_test/Rakefile", "rails_test/common/active_record/app/models/post.rb", "rails_test/common/active_record/test/unit/posts_test.rb", "rails_test/common/all/config/database.yml", "rails_test/common/all/db/migrate/1_create_posts.rb", "rails_test/common/xss_foliate/app/models/post.rb", "rails_test/common/xss_foliate/test/unit/posts_test.rb", "rails_test/generate_test_directory", "test/helper.rb", "test/unit/test_active_record.rb", "test/unit/test_xss_foliate.rb"]
+  s.files = `git ls-files`.split($/)
   s.homepage = "http://github.com/flavorjones/loofah-activerecord"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc"]
