@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
 
   s.require_paths = ["lib"]
   s.authors = ["Mike Dalessio"]
-  s.date = "2014-08-22"
   s.description = "+loofah-activerecord+ extends +loofah+'s HTML sanitization into Rails\nActiveRecord models.\n\nSee more about +loofah+ at: http://github.com/flavorjones/loofah"
   s.email = ["mike.dalessio@gmail.com"]
   s.extra_rdoc_files = ["CHANGELOG.rdoc", "MIT-LICENSE.txt", "Manifest.txt", "README.rdoc", "CHANGELOG.rdoc", "README.rdoc"]
