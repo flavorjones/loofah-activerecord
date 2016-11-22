@@ -17,12 +17,13 @@ namespace "test" do
   end
 
   def ruby_version_for rails_version
-    case rails_version
-    when /^4\.0/
-      "2.0.0"
-    when /^4\./
-      "2.1.2"
-    end
+    ## not needed at the moment; all three supported rails versions run on ruby 2.3.1
+    # case rails_version
+    # when /^4\.0/
+    #   "2.0.0"
+    # when /^4\./
+    #   "2.1.2"
+    # end
   end
 
   def dir_to_version_and_flavor dir
