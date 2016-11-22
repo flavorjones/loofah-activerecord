@@ -1,18 +1,5 @@
-"1.2":
-  "rake": "~>0.8.0"
-  "nokogiri": "~>1.5.0"
-"2.0":
-  "rake": "~>0.8.0"
-  "nokogiri": "~>1.5.0"
-"2.1":
-  "rake": "~>0.8.0"
-  "nokogiri": "~>1.5.0"
-"2.2":
-  "rake": "~>0.8.0"
-  "nokogiri": "~>1.5.0"
-"2.3":
-  "rake": "~>0.8.0"
-  "nokogiri": "~>1.5.0"
+# left as a reminder of how this even works
 "3.0":
   "rake": "~>0.8.0"
   "nokogiri": "~>1.5.0"
+  "i18n": "~>0.5.0"

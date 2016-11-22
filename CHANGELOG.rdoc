@@ -1,4 +1,12 @@
 
+== 2.0 (2016-11-22)
+
+Backwards incompatibilities:
+
+* Removed support for Rails < 4.0.
+* Removed support for Ruby < 2.0.
+
+
 == 1.2.0 (2014-08-22)
 
 Enhancements:
