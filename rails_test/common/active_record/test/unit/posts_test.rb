@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "../test_helper")
 begin
   require "test/unit"
-rescue NameError
+rescue NameError, LoadError
   require "minitest"
 end
 
