@@ -17,16 +17,13 @@ namespace "test" do
   end
 
   def ruby_version_for rails_version
-    case rails_version
-    when /^([12]\.|3\.0)/
-      "1.8.7"
-    when /^3\./
-      "1.9.3"
-    when /^4\.0/
-      "2.0.0"
-    when /^4\./
-      "2.1.2"
-    end
+    ## not needed at the moment; all three supported rails versions run on ruby 2.3.1
+    # case rails_version
+    # when /^4\.0/
+    #   "2.0.0"
+    # when /^4\./
+    #   "2.1.2"
+    # end
   end
 
   def dir_to_version_and_flavor dir
@@ -36,19 +33,19 @@ namespace "test" do
 
   def run(cmd, ruby_version=nil)
     if have_rvm?
-      puts "*running rvm: #{cmd}"
       if ruby_version
         cmd = "rvm \"#{ruby_version}\" do #{cmd}"
       end
+      puts "*running rvm: #{cmd}"
       system cmd
     elsif have_rbenv?
-      puts "* running rbenv: #{cmd}"
       begin
         if ruby_version
           puts "  (with ruby version #{ruby_version})"
           ENV['RBENV_VERSION'] = ruby_version
           cmd = "rbenv exec #{cmd}"
         end
+        puts "* running rbenv: #{cmd}"
         system cmd
       ensure
         ENV.delete('RBENV_VERSION')
@@ -92,11 +89,13 @@ namespace "test" do
 
     @results ||= {}
     Dir.chdir(dir) do
-      ENV['RAILS_ENV'] = "test"
       FileUtils.mkdir_p "log"
       begin
         run "touch db/test.sqlite3" # db:create doesn't exist before rails 2.0
-        Bundler.with_clean_env { run "bundle exec rake db:migrate test:units", ruby_version }
+        Bundler.with_clean_env do
+          ENV['RAILS_ENV'] = "test"
+          run "bundle exec rake db:migrate test:units", ruby_version
+        end
       rescue Object
         @results[dir] = "FAIL"
       else

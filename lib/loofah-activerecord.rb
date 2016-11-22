@@ -3,10 +3,10 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__))) unless $LOAD_PATH.i
 require 'loofah'
 
 module Loofah::ActiveRecord
-  VERSION = "1.2.0"
+  VERSION = "2.0.0"
 end
 
-if defined?(Rails) && [3,4].include?(Rails::VERSION::MAJOR)
+if defined?(Rails) && defined?(Rails::Railtie)
   require 'loofah/activerecord/railtie'
 elsif defined? Rails.configuration and Rails.configuration.frameworks.include?([:active_record]) # >= 2.1
   Rails.configuration.after_initialize do

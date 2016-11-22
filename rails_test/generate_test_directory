@@ -13,6 +13,7 @@ version = ARGV[0]
 flavor = ARGV[1]
 
 require "rubygems"
+require "tmpdir"
 
 def run(cmd)
   puts "* running '#{cmd}'"
@@ -21,19 +22,25 @@ def run(cmd)
 end
 
 def rails version, dir
-  begin
-    gem "rails", "=#{version}"
-  rescue Gem::LoadError => e
-    puts "ERROR: could not find rails version #{version}"
-    puts "Try running:"
-    puts "  gem install rails --version=#{version}"
-    exit 1
-  end
-  puts "* successfully detected rails version #{version}"
-  if version >= "3"
-    run "yes | rails _#{version}_ new #{dir} > /dev/null"
-  else
-    run "yes | rails _#{version}_ #{dir} > /dev/null"
+  thisdir = Dir.pwd
+  Dir.mktmpdir do |tmpdir|
+    Dir.chdir tmpdir do
+      begin
+        gem "rails", "=#{version}"
+      rescue Gem::LoadError => e
+        puts "ERROR: could not find rails version #{version}"
+        puts "Try running:"
+        puts "  gem install rails --version=#{version}"
+        exit 1
+      end
+      puts "* successfully detected rails version #{version}"
+      if version >= "3"
+        run "yes | rails _#{version}_ new #{dir} > /dev/null"
+      else
+        run "yes | rails _#{version}_ #{dir} > /dev/null"
+      end
+      FileUtils.mv dir, thisdir
+    end
   end
 end
 
