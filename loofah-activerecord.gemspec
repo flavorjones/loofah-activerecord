@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: loofah-activerecord 2.0.0.20180212004728 ruby lib
+# stub: loofah-activerecord 2.0.0.20180212011215 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "loofah-activerecord".freeze
-  s.version = "2.0.0.20180212004728"
+  s.version = "2.0.0.20180212011215"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<hoe-bundler>.freeze, [">= 0"])
       s.add_development_dependency(%q<hoe-gemspec>.freeze, [">= 0"])
       s.add_development_dependency(%q<unindent>.freeze, [">= 0"])
+      s.add_development_dependency(%q<concourse>.freeze, [">= 0"])
       s.add_development_dependency(%q<rdoc>.freeze, ["~> 4.0"])
       s.add_development_dependency(%q<hoe>.freeze, ["~> 3.16"])
     else
@@ -44,6 +45,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<hoe-bundler>.freeze, [">= 0"])
       s.add_dependency(%q<hoe-gemspec>.freeze, [">= 0"])
       s.add_dependency(%q<unindent>.freeze, [">= 0"])
+      s.add_dependency(%q<concourse>.freeze, [">= 0"])
       s.add_dependency(%q<rdoc>.freeze, ["~> 4.0"])
       s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
     end
@@ -57,6 +59,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<hoe-bundler>.freeze, [">= 0"])
     s.add_dependency(%q<hoe-gemspec>.freeze, [">= 0"])
     s.add_dependency(%q<unindent>.freeze, [">= 0"])
+    s.add_dependency(%q<concourse>.freeze, [">= 0"])
     s.add_dependency(%q<rdoc>.freeze, ["~> 4.0"])
     s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
   end

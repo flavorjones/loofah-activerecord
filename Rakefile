@@ -2,6 +2,8 @@ require 'rubygems'
 gem 'hoe', '>= 2.3.0'
 require 'hoe'
 
+require 'concourse'
+
 Hoe.plugin :git
 Hoe.plugin :bundler
 Hoe.plugin :gemspec
@@ -24,6 +26,7 @@ Hoe.spec "loofah-activerecord" do
   extra_dev_deps << ["hoe-bundler", ">=0"]
   extra_dev_deps << ["hoe-gemspec", ">=0"]
   extra_dev_deps << ["unindent", ">=0"]
+  extra_dev_deps << ["concourse", ">=0"]
 end
 
 require_relative "test/rails_test_helper"
@@ -51,3 +54,5 @@ namespace :test do
     end
   end
 end
+
+Concourse.new("loofah-activerecord", directory: "concourse").create_tasks!
