@@ -1,5 +1,5 @@
 
-== 2.0 (2016-11-22)
+## 2.0 (2016-11-22)
 
 Backwards incompatibilities:
 
@@ -10,7 +10,7 @@ Features:
 * Added support for Rails 5.
 
 
-== 1.2.0 (2014-08-22)
+## 1.2.0 (2014-08-22)
 
 Enhancements:
 
@@ -18,7 +18,7 @@ Enhancements:
 * Added an `:unencode_special_chars` option to opt out of entity encoding. (Thanks, @openbl!)
 
 
-== 1.1.0 (2013-01-16)
+## 1.1.0 (2013-01-16)
 
 Enhancements:
 
@@ -26,7 +26,7 @@ Enhancements:
 * Altered the installed directory structure to be lib/loofah/activerecord (was lib/loofah-activerecord).
 
 
-== 1.0.0 (2010-10-26)
+## 1.0.0 (2010-10-26)
 
 Notes
 

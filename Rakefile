@@ -11,9 +11,8 @@ Hoe.plugin :gemspec
 Hoe.spec "loofah-activerecord" do
   developer "Mike Dalessio", "mike.dalessio@gmail.com"
 
-  self.extra_rdoc_files = FileList["*.rdoc"]
-  self.history_file     = "CHANGELOG.rdoc"
-  self.readme_file      = "README.rdoc"
+  self.history_file     = "CHANGELOG.md"
+  self.readme_file      = "README.md"
   self.license          "MIT"
 
   extra_deps << ["loofah", ">= 1.0.0"]
