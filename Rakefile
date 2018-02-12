@@ -26,30 +26,28 @@ Hoe.spec "loofah-activerecord" do
   extra_dev_deps << ["unindent", ">=0"]
 end
 
-load "rails_test/Rakefile"
+require_relative "test/rails_test_helper"
 
-task "test:rails" => "gem:spec"
+namespace :test do
+  namespace :rails do
+    Loofah::RailsTests::VERSIONS.each do |version|
+      Loofah::RailsTests::FLAVORS.each do |flavor|
+        name = "#{version}-#{flavor}"
+        desc "test rails #{name}"
+        task "#{name}" => "gem:spec" do
+          Loofah::RailsTests.test version, flavor
+        end
+      end
+    end
+  end
 
-task :redocs => :fix_css
-task :docs => :fix_css
-task :fix_css do
-  better_css = <<-EOT
-    .method-description pre {
-      margin                    : 1em 0 ;
-    }
-
-    .method-description ul {
-      padding                   : .5em 0 .5em 2em ;
-    }
-
-    .method-description p {
-      margin-top                : .5em ;
-    }
-
-    h2 + ul {
-      margin-top                : 1em;
-    }
-  EOT
-  puts "* fixing css"
-  File.open("doc/rdoc.css", "a") { |f| f.write better_css }
+  desc "run all rails tests"
+  task :rails => "gem:spec" do
+    Loofah::RailsTests::VERSIONS.each do |version|
+      Loofah::RailsTests::FLAVORS.each do |flavor|
+        name = "#{version}-#{flavor}"
+        Rake::Task["test:rails:#{name}"].invoke
+      end
+    end
+  end
 end

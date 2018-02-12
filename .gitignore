@@ -3,4 +3,4 @@ doc
 pkg
 .bundle
 Gemfile.lock
-rails_test/bundler_cache
+tmp
