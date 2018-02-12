@@ -30,7 +30,7 @@ module Loofah
             gem "rails", "=#{version}"
             gem "loofah"
             gem "loofah-activerecord", :path => "#{loofah_ar_dir}"
-            gem "sqlite3-ruby", :require => "sqlite3"
+            gem "sqlite3"
           GEM
           snowflakes.each { |name, versionspec| gemfile.puts %Q{gem "#{name}", "#{versionspec}"} }
         end
@@ -69,7 +69,7 @@ module Loofah
       dir = "rails-#{version}-#{flavor}"
 
       Dir.chdir parent_directory do
-        FileUtils.rm_f dir
+        FileUtils.rm_rf dir
 
         Bundler.with_clean_env do
           ENV['BUNDLE_CACHE_PATH'] = BUNDLER_CACHE
