@@ -12,17 +12,15 @@ module Loofah
     ]
 
     TMPDIR = "tmp"
-    ARTIFACTS_DIR = File.join(File.dirname(__FILE__), "..", "rails_test_artifacts")
+    BUNDLER_CACHE = File.expand_path(File.join(TMPDIR, "bundler_cache"))
+    ARTIFACTS_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", "rails_test_artifacts"))
 
     def self.test version, flavor
       dir = generate_test_app version, flavor, TMPDIR
 
       snowflakes = Array gem_versions_for(version)
 
-      loofah_dir = ENV['LOOFAH_DIR'] ||
-                   File.expand_path(File.join(File.dirname(__FILE__), "../../loofah"))
       loofah_ar_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
-      bundler_cache = File.expand_path(File.join(TMPDIR, "bundler_cache"))
 
       Dir.chdir dir do
         File.open("Gemfile", "w") do |gemfile|
@@ -30,7 +28,7 @@ module Loofah
             source "https://rubygems.org"
 
             gem "rails", "=#{version}"
-            gem "loofah", :path => "#{loofah_dir}"
+            gem "loofah"
             gem "loofah-activerecord", :path => "#{loofah_ar_dir}"
             gem "sqlite3-ruby", :require => "sqlite3"
           GEM
@@ -38,22 +36,23 @@ module Loofah
         end
 
         Bundler.with_clean_env do
+          ENV['BUNDLE_CACHE_PATH'] = BUNDLER_CACHE
+          ENV['BUNDLE_GEMFILE'] = "./Gemfile"
           begin
-            Rake.sh "bundle install --local --path=#{bundler_cache}"
+            Rake.sh "bundle install --local"
           rescue
-            Rake.sh "bundle install --path=#{bundler_cache}"
+            Rake.sh "bundle install"
           end
-        end
 
-        # hack for 5.2.0.rc1
-        if File.exist? "config/storage.yml"
-          File.open("config/storage.yml", "w") do |f|
-            f.write %Q{test:\n service: Disk\n root: <%= Rails.root.join("tmp/storage") %>}
+          FileUtils.mkdir_p "log"
+
+          # hack for 5.2.0.rc1
+          if File.exist? "config/storage.yml"
+            File.open("config/storage.yml", "w") do |f|
+              f.write %Q{test:\n service: Disk\n root: <%= Rails.root.join("tmp/storage") %>}
+            end
           end
-        end
 
-        FileUtils.mkdir_p "log"
-        Bundler.with_clean_env do
           ENV['RAILS_ENV'] = "test"
           Rake.sh "bundle exec rake db:create db:migrate test:units"
         end
@@ -73,11 +72,13 @@ module Loofah
         FileUtils.rm_f dir
 
         Bundler.with_clean_env do
+          ENV['BUNDLE_CACHE_PATH'] = BUNDLER_CACHE
+
           if %x{gem list "^rails$" -v #{version} -i} =~ /false/
             Rake.sh "gem install rails -v #{version}"
           end
 
-          Rake.sh "yes | rails _#{version}_ new #{dir} > /dev/null"
+          Rake.sh "yes | rails _#{version}_ new #{dir}"
           Rake.sh "rsync -a #{ARTIFACTS_DIR}/all/ #{dir}"
           Rake.sh "rsync -a #{ARTIFACTS_DIR}/#{flavor}/ #{dir}"
         end
