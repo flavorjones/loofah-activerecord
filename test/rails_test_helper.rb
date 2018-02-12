@@ -12,7 +12,6 @@ module Loofah
     ]
 
     TMPDIR = "tmp"
-    BUNDLER_CACHE = File.expand_path(File.join(TMPDIR, "bundler_cache"))
     ARTIFACTS_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", "rails_test_artifacts"))
 
     def self.test version, flavor
@@ -36,14 +35,6 @@ module Loofah
         end
 
         Bundler.with_clean_env do
-          ENV['BUNDLE_CACHE_PATH'] = BUNDLER_CACHE
-          ENV['BUNDLE_GEMFILE'] = "./Gemfile"
-          begin
-            Rake.sh "bundle install --local"
-          rescue
-            Rake.sh "bundle install"
-          end
-
           FileUtils.mkdir_p "log"
 
           # hack for 5.2.0.rc1
@@ -53,6 +44,7 @@ module Loofah
             end
           end
 
+          ENV['BUNDLE_GEMFILE'] = "./Gemfile"
           ENV['RAILS_ENV'] = "test"
           Rake.sh "bundle exec rake db:create db:migrate test:units"
         end
@@ -72,8 +64,6 @@ module Loofah
         FileUtils.rm_rf dir
 
         Bundler.with_clean_env do
-          ENV['BUNDLE_CACHE_PATH'] = BUNDLER_CACHE
-
           if %x{gem list "^rails$" -v #{version} -i} =~ /false/
             Rake.sh "gem install rails -v #{version}"
           end
