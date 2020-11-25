@@ -6,16 +6,16 @@ source "https://rubygems.org/"
 
 gem "loofah", ">=1.0.0"
 
-gem "minitest", "~>5.14.2", :group => [:development, :test]
-gem "rr", "~>1.0", :group => [:development, :test]
-gem "with_model", "~>2.1.5", :group => [:development, :test]
 gem "bundler", ">=1.2.0", :group => [:development, :test]
-gem "hoe-git", ">=0", :group => [:development, :test]
+gem "concourse", ">=0", :group => [:development, :test]
 gem "hoe-bundler", ">=0", :group => [:development, :test]
 gem "hoe-gemspec", ">=0", :group => [:development, :test]
-gem "unindent", ">=0", :group => [:development, :test]
-gem "concourse", ">=0", :group => [:development, :test]
+gem "hoe-git", ">=0", :group => [:development, :test]
+gem "minitest", "~>5.14.2", :group => [:development, :test]
+gem "rr", "~>1.0", :group => [:development, :test]
 gem "sqlite3", "~>1.4.2", :group => [:development, :test]
+gem "unindent", ">=0", :group => [:development, :test]
+gem "with_model", "~>2.1.5", :group => [:development, :test]
 gem "rdoc", ">=4.0", "<7", :group => [:development, :test]
 gem "hoe", "~>3.22", :group => [:development, :test]
 

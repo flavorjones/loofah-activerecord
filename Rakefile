@@ -17,16 +17,16 @@ Hoe.spec "loofah-activerecord" do
 
   extra_deps << ["loofah", ">= 1.0.0"]
 
-  extra_dev_deps << ["minitest", "~>5.14.2"]
-  extra_dev_deps << ["rr", "~>1.0"]
-  extra_dev_deps << ["with_model", "~> 2.1.5"]
   extra_dev_deps << ["bundler", ">=1.2.0"]
-  extra_dev_deps << ["hoe-git", ">=0"]
+  extra_dev_deps << ["concourse", ">=0"]
   extra_dev_deps << ["hoe-bundler", ">=0"]
   extra_dev_deps << ["hoe-gemspec", ">=0"]
-  extra_dev_deps << ["unindent", ">=0"]
-  extra_dev_deps << ["concourse", ">=0"]
+  extra_dev_deps << ["hoe-git", ">=0"]
+  extra_dev_deps << ["minitest", "~>5.14.2"]
+  extra_dev_deps << ["rr", "~>1.0"]
   extra_dev_deps << ["sqlite3", "~> 1.4.2"]
+  extra_dev_deps << ["unindent", ">=0"]
+  extra_dev_deps << ["with_model", "~> 2.1.5"]
 end
 
 require_relative "test/rails_test_helper"
