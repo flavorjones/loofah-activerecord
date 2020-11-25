@@ -12,11 +12,11 @@ class TestXssFoliate < Loofah::ActiveRecord::TestCase
   end
 
   context "with a Post model" do
-    before do
-      ActsAsFu.build_model(:posts) do
-        string :plain_text
-        string :html_string
-        integer :not_a_string
+    with_model :Post do
+      table do |t|
+        t.string :plain_text
+        t.string :html_string
+        t.integer :not_a_string
       end
     end
 

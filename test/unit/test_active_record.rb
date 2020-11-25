@@ -6,10 +6,10 @@ class TestActiveRecord < Loofah::ActiveRecord::TestCase
   PLAIN_TEXT  = "vanilla text"
 
   context "with a Post model" do
-    before do
-      ActsAsFu.build_model(:posts) do
-        string :plain_text
-        string :html_string
+    with_model :Post do
+      table do |t|
+        t.string :plain_text
+        t.string :html_string
       end
     end
 
