@@ -55,4 +55,4 @@ namespace :test do
   end
 end
 
-Concourse.new("loofah-activerecord", directory: "concourse").create_tasks!
+Concourse.new("loofah-activerecord", directory: "concourse", fly_target: "ci", format: true).create_tasks!
