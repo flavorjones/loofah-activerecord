@@ -5,6 +5,15 @@ module Loofah
   module RailsTests
     FLAVORS = %w[xss_foliate active_record]
 
+    RAILS_TO_RUBY_VERSIONS = {
+      "3.2" => "2.4",
+      "4.2" => "2.7",
+      "5.1" => "2.7",
+      "5.2" => "2.7",
+      "6.0" => "2.7",
+      "6.1" => "2.7",
+    }
+
     VERSIONS = %w[
       3.2.22
       4.2.11

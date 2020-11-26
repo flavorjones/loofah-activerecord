@@ -1,13 +1,4 @@
 
-groups:
-  - name: master
-    jobs:
-      - "unit"
-      - "rails-3.2"
-      - "rails-4.2"
-      - "rails-5.1"
-      - "rails-5.2"
-
 resources:
   - name: ci
     type: git
@@ -30,7 +21,18 @@ jobs:
       - get: ci
       - get: loofah-activerecord
         trigger: true
-      - task: rake-test
+      - task: rake-test-2.4
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.4"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+          run:
+            path: ci/concourse/tasks/rake-test/run.sh
+      - task: rake-test-2.5
         config:
           platform: linux
           image_resource:
@@ -41,80 +43,105 @@ jobs:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
           run:
             path: ci/concourse/tasks/rake-test/run.sh
+      - task: rake-test-2.6
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.6"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+          run:
+            path: ci/concourse/tasks/rake-test/run.sh
+      - task: rake-test-2.7
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.7"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+          run:
+            path: ci/concourse/tasks/rake-test/run.sh
 
-  - name: "rails-3.2"
+  - name: "rails"
     public: true
     plan:
       - get: ci
       - get: loofah-activerecord
         trigger: true
         passed: ["unit"]
-      - task: rake-test-rails
+      - task: rake-test-rails-3.2
         config:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "2.5"}
+            source: {repository: ruby, tag: "2.4"}
           inputs: [{name: ci}, {name: loofah-activerecord}]
           params:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-            TEST_RAILS_VERSION: 3.2.22.5
+            TEST_RAILS_VERSION: 3.2.22
           run:
             path: ci/concourse/tasks/rake-test-rails/run.sh
-  - name: "rails-4.2"
-    public: true
-    plan:
-      - get: ci
-      - get: loofah-activerecord
-        trigger: true
-        passed: ["unit"]
-      - task: rake-test-rails
+      - task: rake-test-rails-4.2
         config:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "2.5"}
+            source: {repository: ruby, tag: "2.7"}
           inputs: [{name: ci}, {name: loofah-activerecord}]
           params:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-            TEST_RAILS_VERSION: 4.2.10
+            TEST_RAILS_VERSION: 4.2.11
           run:
             path: ci/concourse/tasks/rake-test-rails/run.sh
-  - name: "rails-5.1"
-    public: true
-    plan:
-      - get: ci
-      - get: loofah-activerecord
-        trigger: true
-        passed: ["unit"]
-      - task: rake-test-rails
+      - task: rake-test-rails-5.1
         config:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "2.5"}
+            source: {repository: ruby, tag: "2.7"}
           inputs: [{name: ci}, {name: loofah-activerecord}]
           params:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-            TEST_RAILS_VERSION: 5.1.4
+            TEST_RAILS_VERSION: 5.1.7
           run:
             path: ci/concourse/tasks/rake-test-rails/run.sh
-  - name: "rails-5.2"
-    public: true
-    plan:
-      - get: ci
-      - get: loofah-activerecord
-        trigger: true
-        passed: ["unit"]
-      - task: rake-test-rails
+      - task: rake-test-rails-5.2
         config:
           platform: linux
           image_resource:
             type: docker-image
-            source: {repository: ruby, tag: "2.5"}
+            source: {repository: ruby, tag: "2.7"}
           inputs: [{name: ci}, {name: loofah-activerecord}]
           params:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-            TEST_RAILS_VERSION: 5.2.0.rc1
+            TEST_RAILS_VERSION: 5.2.4
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
+      - task: rake-test-rails-6.0
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.7"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 6.0.3
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
+      - task: rake-test-rails-6.1
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.7"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 6.1.0.rc1
           run:
             path: ci/concourse/tasks/rake-test-rails/run.sh

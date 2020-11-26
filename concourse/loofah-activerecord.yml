@@ -1,14 +1,4 @@
-% ruby_version = RUBIES[:mri].last      
-% require_relative "test/rails_test_helper"
-
-groups:
-  - name: master
-    jobs:
-      - "unit"
-% Loofah::RailsTests::VERSIONS.each do |version|
-% short = version.split(".").first(2).join(".")
-      - "rails-<%= short %>"
-% end
+% require_relative "../test/rails_test_helper"
 
 resources:
   - name: ci
@@ -32,7 +22,8 @@ jobs:
       - get: ci
       - get: loofah-activerecord
         trigger: true
-      - task: rake-test
+% Concourse::production_rubies.each do |ruby_version|
+      - task: rake-test-<%= ruby_version.split(".").first(2).join(".") %>
         config:
           platform: linux
           image_resource:
@@ -43,17 +34,19 @@ jobs:
             NOKOGIRI_USE_SYSTEM_LIBRARIES: t
           run:
             path: ci/concourse/tasks/rake-test/run.sh
+% end
 
-% Loofah::RailsTests::VERSIONS.each do |version|
-% short = version.split(".").first(2).join(".")
-  - name: "rails-<%= short %>"
+  - name: "rails"
     public: true
     plan:
       - get: ci
       - get: loofah-activerecord
         trigger: true
         passed: ["unit"]
-      - task: rake-test-rails
+% Loofah::RailsTests::VERSIONS.each do |version|
+% short = version.split(".").first(2).join(".")
+% ruby_version = Loofah::RailsTests::RAILS_TO_RUBY_VERSIONS[short]
+      - task: rake-test-rails-<%= short %>
         config:
           platform: linux
           image_resource:
