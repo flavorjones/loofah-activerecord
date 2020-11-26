@@ -5,4 +5,3 @@ pkg
 Gemfile.lock
 tmp
 concourse/private.yml
-concourse/loofah-activerecord.final.yml

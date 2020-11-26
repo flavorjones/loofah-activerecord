@@ -1,0 +1,120 @@
+
+groups:
+  - name: master
+    jobs:
+      - "unit"
+      - "rails-3.2"
+      - "rails-4.2"
+      - "rails-5.1"
+      - "rails-5.2"
+
+resources:
+  - name: ci
+    type: git
+    source:
+      uri: https://github.com/flavorjones/loofah-activerecord
+      branch: master
+      disable_ci_skip: true # always get the latest pipeline configuration
+  - name: loofah-activerecord
+    type: git
+    source:
+      uri: https://github.com/flavorjones/loofah-activerecord
+      branch: master
+      ignore_paths:
+        - concourse/**
+
+jobs:
+  - name: "unit"
+    public: true
+    plan:
+      - get: ci
+      - get: loofah-activerecord
+        trigger: true
+      - task: rake-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.5"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+          run:
+            path: ci/concourse/tasks/rake-test/run.sh
+
+  - name: "rails-3.2"
+    public: true
+    plan:
+      - get: ci
+      - get: loofah-activerecord
+        trigger: true
+        passed: ["unit"]
+      - task: rake-test-rails
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.5"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 3.2.22.5
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
+  - name: "rails-4.2"
+    public: true
+    plan:
+      - get: ci
+      - get: loofah-activerecord
+        trigger: true
+        passed: ["unit"]
+      - task: rake-test-rails
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.5"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 4.2.10
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
+  - name: "rails-5.1"
+    public: true
+    plan:
+      - get: ci
+      - get: loofah-activerecord
+        trigger: true
+        passed: ["unit"]
+      - task: rake-test-rails
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.5"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 5.1.4
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
+  - name: "rails-5.2"
+    public: true
+    plan:
+      - get: ci
+      - get: loofah-activerecord
+        trigger: true
+        passed: ["unit"]
+      - task: rake-test-rails
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ruby, tag: "2.5"}
+          inputs: [{name: ci}, {name: loofah-activerecord}]
+          params:
+            NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+            TEST_RAILS_VERSION: 5.2.0.rc1
+          run:
+            path: ci/concourse/tasks/rake-test-rails/run.sh
