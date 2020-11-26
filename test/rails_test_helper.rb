@@ -1,14 +1,17 @@
 require "unindent"
+require "bundler"
 
 module Loofah
   module RailsTests
     FLAVORS = %w[xss_foliate active_record]
 
     VERSIONS = %w[
-      3.2.22.5
-      4.2.10
-      5.1.4
-      5.2.0.rc1
+      3.2.22
+      4.2.11
+      5.1.7
+      5.2.4
+      6.0.3
+      6.1.0.rc1
     ]
 
     TMPDIR = "tmp"
@@ -17,7 +20,7 @@ module Loofah
     def self.test version, flavor
       dir = generate_test_app version, flavor, TMPDIR
 
-      snowflakes = Array gem_versions_for(version)
+      snowflakes = gem_versions_for(version)
 
       loofah_ar_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
@@ -26,15 +29,25 @@ module Loofah
           gemfile.write <<-GEM.unindent
             source "https://rubygems.org"
 
-            gem "rails", "=#{version}"
+            gem "rails", "~> #{version}"
             gem "loofah"
             gem "loofah-activerecord", :path => "#{loofah_ar_dir}"
-            gem "sqlite3"
           GEM
+          gemfile.puts 'gem "sqlite3"' unless snowflakes.key?("sqlite3")
           snowflakes.each { |name, versionspec| gemfile.puts %Q{gem "#{name}", "#{versionspec}"} }
         end
 
-        Bundler.with_clean_env do
+        bundle_version_args = if snowflakes.key?("bundler")
+                                version = Gem::Requirement.new(snowflakes["bundler"]).requirements.first.last
+                                Rake.sh "gem install bundler -v #{version}"
+                                "_#{version}_"
+                              else
+                                ""
+                              end
+
+        ::Bundler.with_unbundled_env do
+          Rake.sh "bundle #{bundle_version_args} install"
+
           FileUtils.mkdir_p "log"
 
           # hack for 5.2.0.rc1
@@ -46,14 +59,14 @@ module Loofah
 
           ENV['BUNDLE_GEMFILE'] = "./Gemfile"
           ENV['RAILS_ENV'] = "test"
-          Rake.sh "bundle exec rake db:create db:migrate test:units"
+          Rake.sh "bundle #{bundle_version_args} exec rake db:create db:migrate test:units"
         end
       end
     end
 
     def self.gem_versions_for rails_version
       mm = rails_version.split(".")[0,2].join(".")
-      YAML.load_file(File.join(ARTIFACTS_DIR, "gem-versions.yml"))[mm]
+      YAML.load_file(File.join(ARTIFACTS_DIR, "gem-versions.yml"))[mm] || {}
     end
 
     def self.generate_test_app version, flavor, parent_directory
@@ -63,7 +76,7 @@ module Loofah
       Dir.chdir parent_directory do
         FileUtils.rm_rf dir
 
-        Bundler.with_clean_env do
+        ::Bundler.with_unbundled_env do
           if %x{gem list "^rails$" -v #{version} -i} =~ /false/
             Rake.sh "gem install rails -v #{version}"
           end
