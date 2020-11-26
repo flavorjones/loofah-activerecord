@@ -27,9 +27,17 @@ module Loofah
     ARTIFACTS_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", "rails_test_artifacts"))
 
     def self.test version, flavor
-      dir = generate_test_app version, flavor, TMPDIR
-
       snowflakes = gem_versions_for(version)
+
+      bundle_version_args = if snowflakes.key?("bundler")
+                              bundler_version = Gem::Requirement.new(snowflakes["bundler"]).requirements.first.last
+                              Rake.sh "gem install bundler -v #{bundler_version}"
+                              "_#{bundler_version}_"
+                            else
+                              ""
+                            end
+
+      dir = generate_test_app version, flavor, TMPDIR
 
       loofah_ar_dir = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
@@ -45,14 +53,6 @@ module Loofah
           gemfile.puts 'gem "sqlite3"' unless snowflakes.key?("sqlite3")
           snowflakes.each { |name, versionspec| gemfile.puts %Q{gem "#{name}", "#{versionspec}"} }
         end
-
-        bundle_version_args = if snowflakes.key?("bundler")
-                                version = Gem::Requirement.new(snowflakes["bundler"]).requirements.first.last
-                                Rake.sh "gem install bundler -v #{version}"
-                                "_#{version}_"
-                              else
-                                ""
-                              end
 
         ::Bundler.with_unbundled_env do
           Rake.sh "bundle #{bundle_version_args} install"
