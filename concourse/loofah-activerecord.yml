@@ -44,7 +44,7 @@ jobs:
         trigger: true
         passed: ["unit"]
 % Loofah::RailsTests::VERSIONS.each do |version|
-% short = version.split(".").first(2).join(".")
+% short = version.canonical_segments.first(2).join(".")
 % ruby_version = Loofah::RailsTests::RAILS_TO_RUBY_VERSIONS[short]
       - task: rake-test-rails-<%= short %>
         config:

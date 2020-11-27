@@ -21,10 +21,12 @@ module Loofah
       5.2.4
       6.0.3
       6.1.0.rc1
-    ]
+    ].map { |v| Gem::Version.new(v) }
 
     TMPDIR = "tmp"
     ARTIFACTS_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", "rails_test_artifacts"))
+
+    SKIP_WEBPACK_REQUIREMENT = Gem::Requirement.new("~> 6.0")
 
     def self.test version, flavor
       snowflakes = gem_versions_for(version)
@@ -74,7 +76,7 @@ module Loofah
     end
 
     def self.gem_versions_for rails_version
-      mm = rails_version.split(".")[0,2].join(".")
+      mm = rails_version.canonical_segments[0,2].join(".")
       YAML.load_file(File.join(ARTIFACTS_DIR, "gem-versions.yml"))[mm] || {}
     end
 
@@ -90,7 +92,9 @@ module Loofah
             Rake.sh "gem install rails -v #{version}"
           end
 
-          Rake.sh "yes | rails _#{version}_ new #{dir}"
+          rails_new_args = SKIP_WEBPACK_REQUIREMENT.satisfied_by?(version) ? "--skip-webpack-install" : ""
+
+          Rake.sh "yes | rails _#{version}_ new #{rails_new_args} #{dir}"
           Rake.sh "rsync -a #{ARTIFACTS_DIR}/all/ #{dir}"
           Rake.sh "rsync -a #{ARTIFACTS_DIR}/#{flavor}/ #{dir}"
         end
