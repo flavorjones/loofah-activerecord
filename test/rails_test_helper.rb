@@ -20,7 +20,7 @@ module Loofah
       5.1.7
       5.2.4
       6.0.3
-      6.1.0.rc1
+      6.1.1
     ].map { |v| Gem::Version.new(v) }
 
     TMPDIR = "tmp"

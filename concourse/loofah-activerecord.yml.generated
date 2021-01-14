@@ -8,21 +8,6 @@ jobs:
       image_resource:
         source:
           repository: ruby
-          tag: "2.4"
-        type: docker-image
-      inputs:
-      - name: ci
-      - name: loofah-activerecord
-      params:
-        NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-      platform: linux
-      run:
-        path: ci/concourse/tasks/rake-test/run.sh
-    task: rake-test-2.4
-  - config:
-      image_resource:
-        source:
-          repository: ruby
           tag: "2.5"
         type: docker-image
       inputs:
@@ -64,6 +49,21 @@ jobs:
       run:
         path: ci/concourse/tasks/rake-test/run.sh
     task: rake-test-2.7
+  - config:
+      image_resource:
+        source:
+          repository: ruby
+          tag: "3.0"
+        type: docker-image
+      inputs:
+      - name: ci
+      - name: loofah-activerecord
+      params:
+        NOKOGIRI_USE_SYSTEM_LIBRARIES: t
+      platform: linux
+      run:
+        path: ci/concourse/tasks/rake-test/run.sh
+    task: rake-test-3.0
   public: true
 - name: rails
   plan:
@@ -163,7 +163,7 @@ jobs:
       - name: loofah-activerecord
       params:
         NOKOGIRI_USE_SYSTEM_LIBRARIES: t
-        TEST_RAILS_VERSION: 6.1.0.rc1
+        TEST_RAILS_VERSION: 6.1.1
       platform: linux
       run:
         path: ci/concourse/tasks/rake-test-rails/run.sh
