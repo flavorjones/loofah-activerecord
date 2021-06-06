@@ -1,5 +1,6 @@
 require "unindent"
 require "bundler"
+require "yaml"
 
 module Loofah
   module RailsTests
