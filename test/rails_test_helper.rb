@@ -77,7 +77,7 @@ module Loofah
     end
 
     def self.gem_versions_for rails_version
-      mm = rails_version.canonical_segments[0,2].join(".")
+      mm = rails_version.segments[0,2].join(".")
       YAML.load_file(File.join(ARTIFACTS_DIR, "gem-versions.yml"))[mm] || {}
     end
 
@@ -142,7 +142,7 @@ module Loofah
 
       VERSIONS.each do |version|
         safe_version = version.to_s.tr(".", "_")
-        short = version.canonical_segments.first(2).join(".")
+        short = version.segments.first(2).join(".")
         ruby_version = RAILS_TO_RUBY_VERSIONS[short]
         pipeline.write(<<~EOF)
           # test rails version #{version}
