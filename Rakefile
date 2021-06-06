@@ -32,5 +32,11 @@ namespace :test do
   end
 end
 
+desc "generate the github actions pipeline"
+task "generate_pipeline" do
+  require_relative "test/rails_test_helper"
+  Loofah::RailsTests.generate_github_actions_pipeline("ci.yml")
+end
+
 require 'concourse'
 Concourse.new("loofah-activerecord", directory: "concourse", fly_target: "ci", format: true).create_tasks!
