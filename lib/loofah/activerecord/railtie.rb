@@ -9,8 +9,8 @@ module Loofah::ActiveRecord
                            end
       activerecord_railtie = railtie_collection.select {|railtie| railtie.class.to_s == "ActiveRecord::Railtie" }
       if activerecord_railtie
-        require 'loofah/activerecord/active_record'
-        require 'loofah/activerecord/xss_foliate'
+        require_relative 'active_record'
+        require_relative 'xss_foliate'
       end
     end
   end
