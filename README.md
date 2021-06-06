@@ -7,11 +7,8 @@
 
 ## Status
 
-|System|Status|
-|--|--|
-| Concourse CI | [![Concourse CI](https://ci.nokogiri.org/api/v1/teams/nokogiri-core/pipelines/loofah-activerecord/badge)](https://ci.nokogiri.org/teams/nokogiri-core/pipelines/loofah-activerecord?groups=master) |
-| Code Climate | [![Code Climate](https://codeclimate.com/github/flavorjones/loofah-activerecord.svg)](https://codeclimate.com/github/flavorjones/loofah-activerecord) |
-| Version Eye | [![Version Eye](https://www.versioneye.com/ruby/loofah-activerecord/badge.png)](https://www.versioneye.com/ruby/loofah-activerecord) |
+[![ci](https://github.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml/badge.svg?branch=main)](https://gi
+thub.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml)
 
 
 ## Description
