@@ -6,7 +6,6 @@ module Loofah
     FLAVORS = %w[xss_foliate active_record]
 
     RAILS_TO_RUBY_VERSIONS = {
-      "3.2" => "2.4",
       "4.2" => "2.6",
       "5.1" => "2.7",
       "5.2" => "2.7",
@@ -15,12 +14,11 @@ module Loofah
     }
 
     VERSIONS = %w[
-      3.2.22
-      4.2.11
+      4.2.11.3
       5.1.7
-      5.2.4
-      6.0.3
-      6.1.1
+      5.2.6
+      6.0.3.7
+      6.1.3.2
     ].map { |v| Gem::Version.new(v) }
 
     TMPDIR = "tmp"
