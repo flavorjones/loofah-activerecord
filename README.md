@@ -7,8 +7,7 @@
 
 ## Status
 
-[![ci](https://github.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml/badge.svg?branch=main)](https://gi
-thub.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml)
+[![ci](https://github.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/flavorjones/loofah-activerecord/actions/workflows/ci.yml)
 
 
 ## Description
