@@ -1,8 +1,6 @@
 require 'loofah'
 
-module Loofah::ActiveRecord
-  VERSION = "2.0.0"
-end
+require_relative "loofah/activerecord/version"
 
 if defined?(Rails) && defined?(Rails::Railtie)
   require_relative 'loofah/activerecord/railtie'
