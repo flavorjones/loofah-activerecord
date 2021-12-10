@@ -1,4 +1,3 @@
-require "unindent"
 require "bundler"
 require "yaml"
 
@@ -11,15 +10,17 @@ module Loofah
       "5.1" => "2.7",
       "5.2" => "2.7",
       "6.0" => "2.7",
-      "6.1" => "2.7",
+      "6.1" => "3.0",
+      "7.0" => "3.0",
     }
 
     VERSIONS = %w[
       4.2.11.3
       5.1.7
       5.2.6
-      6.0.3.7
-      6.1.3.2
+      6.0.4.1
+      6.1.4.1
+      7.0.0.rc1
     ].map { |v| Gem::Version.new(v) }
 
     TMPDIR = "tmp"
@@ -27,6 +28,7 @@ module Loofah
     PIPELINE_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", ".github", "workflows"))
 
     SKIP_WEBPACK_REQUIREMENT = Gem::Requirement.new("~> 6.0")
+    SKIP_ASSET_PIPELINE_REQUIREMENT = Gem::Requirement.new("~> 7.0.pre")
 
     def self.test version, flavor
       snowflakes = gem_versions_for(version)
@@ -45,7 +47,7 @@ module Loofah
 
       Dir.chdir dir do
         File.open("Gemfile", "w") do |gemfile|
-          gemfile.write <<-GEM.unindent
+          gemfile.write <<~GEM
             source "https://rubygems.org"
 
             gem "rails", "~> #{version}"
@@ -92,7 +94,14 @@ module Loofah
             Rake.sh "gem install rails -v #{version}"
           end
 
-          rails_new_args = SKIP_WEBPACK_REQUIREMENT.satisfied_by?(version) ? "--skip-webpack-install" : ""
+          rails_new_args = [].tap do |args|
+            if SKIP_WEBPACK_REQUIREMENT.satisfied_by?(version)
+              args << "--skip-webpack-install"
+            end
+            if SKIP_ASSET_PIPELINE_REQUIREMENT.satisfied_by?(version)
+              args << "--skip-asset-pipeline"
+            end
+          end.join(" ")
 
           Rake.sh "yes | rails _#{version}_ new #{rails_new_args} #{dir}"
           Rake.sh "rsync -a #{ARTIFACTS_DIR}/all/ #{dir}"
