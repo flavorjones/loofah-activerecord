@@ -33,6 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("rake", ["~> 13.0"])
   spec.add_development_dependency("rr", ["~> 3.0"])
   spec.add_development_dependency("sqlite3", ["~> 1.4.2"])
-  spec.add_development_dependency("unindent", [">= 0"])
   spec.add_development_dependency("with_model", ["~> 2.1.5"])
 end

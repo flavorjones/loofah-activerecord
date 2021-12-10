@@ -1,4 +1,3 @@
-require "unindent"
 require "bundler"
 require "yaml"
 
@@ -45,7 +44,7 @@ module Loofah
 
       Dir.chdir dir do
         File.open("Gemfile", "w") do |gemfile|
-          gemfile.write <<-GEM.unindent
+          gemfile.write <<~GEM
             source "https://rubygems.org"
 
             gem "rails", "~> #{version}"
