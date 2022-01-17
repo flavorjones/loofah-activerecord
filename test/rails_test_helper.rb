@@ -11,7 +11,7 @@ module Loofah
       "5.2" => "2.7",
       "6.0" => "2.7",
       "6.1" => "3.0",
-      "7.0" => "3.0",
+      "7.0" => "3.1",
     }
 
     VERSIONS = %w[
@@ -20,7 +20,7 @@ module Loofah
       5.2.6
       6.0.4.1
       6.1.4.1
-      7.0.0.rc1
+      7.0.1
     ].map { |v| Gem::Version.new(v) }
 
     TMPDIR = "tmp"
@@ -137,7 +137,7 @@ module Loofah
           unit:
             strategy:
               matrix:
-                ruby: ["2.5", "2.6", "2.7", "3.0", "head"]
+                ruby: ["2.5", "2.6", "2.7", "3.0", "3.1", "head"]
             runs-on: ubuntu-latest
             steps:
               - uses: actions/checkout@v2
